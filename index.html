@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Australian Downsizing Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto p-4">
+        <div class="bg-white rounded-lg shadow-lg">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="home" class="w-6 h-6"></i>
+                    Australian Downsizing & Super Calculator
+                </h1>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Input Section -->
+                    <div class="space-y-4">
+                        <!-- Property Details -->
+                        <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                            <h3 class="font-semibold mb-2">Property Details</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        Current Home Value
+                                    </label>
+                                    <div class="relative">
+                                        <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                        <input
+                                            type="number"
+                                            id="currentHomeValue"
+                                            value="1500000"
+                                            class="pl-8 w-full p-2 border rounded"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        Downsized Home Value
+                                    </label>
+                                    <div class="relative">
+                                        <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                        <input
+                                            type="number"
+                                            id="newHomeValue"
+                                            value="800000"
+                                            class="pl-8 w-full p-2 border rounded"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Superannuation Details -->
+                        <div class="bg-green-50 p-4 rounded-lg mb-4">
+                            <h3 class="font-semibold mb-2">Superannuation Details</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        Current Super Balance
+                                    </label>
+                                    <div class="relative">
+                                        <i data-lucide="piggy-bank" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                        <input
+                                            type="number"
+                                            id="currentSuper"
+                                            value="600000"
+                                            class="pl-8 w-full p-2 border rounded"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">
+                                        Annual Salary (for Super)
+                                    </label>
+                                    <div class="relative">
+                                        <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                        <input
+                                            type="number"
+                                            id="salaryForSuper"
+                                            value="150000"
+                                            class="pl-8 w-full p-2 border rounded"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Age Input -->
+                        <div>
+                            <label class="block text-sm font-medium mb-1">
+                                Current Age
+                            </label>
+                            <div class="relative">
+                                <i data-lucide="calendar" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                <input
+                                    type="number"
+                                    id="currentAge"
+                                    value="55"
+                                    class="pl-8 w-full p-2 border rounded"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Advanced Options Toggle -->
+                        <button
+                            id="advancedToggle"
+                            class="text-blue-600 text-sm"
+                        >
+                            Show Advanced Options
+                        </button>
+
+                        <!-- Advanced Options Section -->
+                        <div id="advancedOptions" class="space-y-4 hidden">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    Current Non-Super Savings
+                                </label>
+                                <div class="relative">
+                                    <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                    <input
+                                        type="number"
+                                        id="currentSavings"
+                                        value="500000"
+                                        class="pl-8 w-full p-2 border rounded"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    Annual Living Expenses
+                                </label>
+                                <div class="relative">
+                                    <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
+                                    <input
+                                        type="number"
+                                        id="annualExpenses"
+                                        value="80000"
+                                        class="pl-8 w-full p-2 border rounded"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    Non-Super Investment Return (%)
+                                </label>
+                                <input
+                                    type="number"
+                                    id="expectedReturn"
+                                    value="5"
+                                    class="w-full p-2 border rounded"
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium mb-1">
+                                    Super Return Rate (%)
+                                </label>
+                                <input
+                                    type="number"
+                                    id="superReturnRate"
+                                    value="7"
+                                    class="w-full p-2 border rounded"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <h3 class="text-xl font-semibold mb-4">Retirement Projections</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <p class="text-sm text-gray-600">Capital Released from Downsizing</p>
+                                <p id="capitalFreed" class="text-2xl font-bold text-green-600">
+                                    $700,000
+                                </p>
+                            </div>
+
+                            <div class="border-t pt-4">
+                                <h4 class="font-semibold mb-2">Traditional Retirement (Age 67)</h4>
+                                <div class="space-y-2">
+                                    <div>
+                                        <p class="text-sm text-gray-600">Projected Super Balance</p>
+                                        <p id="projectedSuper" class="text-xl font-semibold">
+                                            $1,200,000
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="border-t pt-4">
+                                <h4 class="font-semibold mb-2">Early Retirement Scenario</h4>
+                                <div class="space-y-2">
+                                    <div>
+                                        <p class="text-sm text-gray-600">
+                                            Years Earlier You Could Retire
+                                        </p>
+                                        <p id="yearsEarlier" class="text-2xl font-bold text-blue-600">
+                                            5.0 years
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Super Balance at Early Retirement</p>
+                                        <p id="earlySuper" class="text-xl font-semibold">
+                                            $800,000
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Combined Wealth at Early Retirement</p>
+                                        <p id="combinedWealth" class="text-xl font-semibold">
+                                            $1,500,000
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-4 bg-blue-50 rounded-lg space-y-3">
+                                <h4 class="font-semibold">How Downsizing Helps You Retire Earlier:</h4>
+                                <div class="space-y-2">
+                                    <p class="text-sm" id="capitalBoostExplanation">
+                                        1. <span class="font-medium">Immediate Capital Boost:</span> By downsizing from $1,500,000 to $800,000, 
+                                        you free up $700,000 to invest for your retirement.
+                                    </p>
+                                    <p class="text-sm" id="investmentExplanation">
+                                        2. <span class="font-medium">Investment Growth:</span> This freed-up capital can be invested to generate approximately $28,000 
+                                        annual income (using a 4% safe withdrawal rate).
+                                    </p>
+                                    <p class="text-sm" id="superExplanation">
+                                        3. <span class="font-medium">Combined with Super:</span> Your super balance of $600,000 continues growing while the downsizing proceeds 
+                                        work alongside it, creating two powerful retirement income streams.
+                                    </p>
+                                </div>
+                                <p class="text-sm font-medium pt-2" id="finalResult">
+                                    Result: You could retire 5.0 years earlier than the traditional retirement 
+                                    age of 67, with a comfortable combined income of $80,000 per year from both your super and downsizing investments.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Toggle Advanced Options
+        document.getElementById('advancedToggle').addEventListener('click', function() {
+            const advancedOptions = document.getElementById('advancedOptions');
+            const isHidden = advancedOptions.classList.contains('hidden');
+            advancedOptions.classList.toggle('hidden');
+            this.textContent = isHidden ? 'Hide Advanced Options' : 'Show Advanced Options';
+        });
+
+        // Format currency
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('en-AU', {
+                style: 'currency',
+                currency: 'AUD',
+                maximumFractionDigits: 0,
+            }).format(value);
+        }
+
+        // Calculate retirement projections
+        function calculateRetirementProjections() {
+            const inputs = {
+                currentHomeValue: parseFloat(document.getElementById('currentHomeValue').value),
+                newHomeValue: parseFloat(document.getElementById('newHomeValue').value),
+                currentAge: parseFloat(document.getElementById('currentAge').value),
+                currentSavings: parseFloat(document.getElementById('currentSavings').value),
+                annualExpenses: parseFloat(document.getElementById('annualExpenses').value),
+                currentSuper: parseFloat(document.getElementById('currentSuper').value),
+                employerContributions: 27500,
+                salaryForSuper: parseFloat(document.getElementById('salaryForSuper').value),
+                expectedReturn: parseFloat(document.getElementById('expectedReturn').value),
+                superReturnRate: parseFloat(document.getElementById('superReturnRate').value)
+            };
+
+            // Calculate immediate capital from downsizing
+            const capitalFreed = inputs.currentHomeValue - inputs.newHomeValue;
+            const totalInvestableCapital = capitalFreed + inputs.currentSavings;
+            
+            // Calculate traditional retirement age metrics
+            const yearsToTraditionalRetirement = 67 - inputs.currentAge;
+            
+            // Super calculations
+            const annualSuperContribution = Math.min(
+                inputs.employerContributions,
+                inputs.salaryForSuper * 0.105
+            );
+            
+            // Target for comfortable retirement
+            const annualReturnRate = inputs.expectedReturn / 100;
+            const targetAnnualIncome = inputs.annualExpenses;
+            
+            // Calculate early retirement possibility
+            let yearsToRetirement = 0;
+            let investedCapital = totalInvestableCapital;
+            let currentSuper = inputs.currentSuper;
+            
+            // Simplified retirement calculation
+            function calculateRetirementReadiness(capital, super_balance) {
+                const incomeFromCapital = capital * 0.04;
+                const incomeFromSuper = super_balance * 0.05;
+                return (incomeFromCapital + incomeFromSuper) >= targetAnnualIncome;
+            }
+            
+            // Find earliest retirement point
+            while (yearsToRetirement < yearsToTraditionalRetirement) {
+                if (calculateRetirementReadiness(investedCapital, currentSuper)) {
+                    break;
+                }
+                
+                investedCapital *= (1 + annualReturnRate);
+                currentSuper = (currentSuper + annualSuperContribution) * (1 + inputs.superReturnRate / 100);
+                yearsToRetirement++;
+            }
+            
+            // Calculate final values
+            const projectedSuper = (currentSuper + annualSuperContribution) * 
+                Math.pow(1 + inputs.superReturnRate / 100, yearsToTraditionalRetirement - yearsToRetirement);
+
+            // Update results
+            document.getElementById('capitalFreed').textContent = formatCurrency(capitalFreed);
+            document.getElementById('projectedSuper').textContent = formatCurrency(projectedSuper);
+            document.getElementById('yearsEarlier').textContent = 
+                (yearsToTraditionalRetirement - yearsToRetirement).toFixed(1) + ' years';
+            document.getElementById('earlySuper').textContent = formatCurrency(currentSuper);
+            document.getElementById('combinedWealth').textContent = formatCurrency(projectedSuper + investedCapital);
+
+            // Update explanations
+            document.getElementById('capitalBoostExplanation').innerHTML = 
+                `1. <span class="font-medium">Immediate Capital Boost:</span> By downsizing from ${formatCurrency(inputs.currentHomeValue)} to ${formatCurrency(inputs.newHomeValue)}, 
+                you free up ${formatCurrency(capitalFreed)} to invest for your retirement.`;
+            
+            document.getElementById('investmentExplanation').innerHTML = 
+                `2. <span class="font-medium">Investment Growth:</span> This freed-up capital can be invested to generate approximately ${formatCurrency(capitalFreed * 0.04)} 
+                annual income (using a 4% safe withdrawal rate).`;
+            
+            document.getElementById('superExplanation').innerHTML = 
+                `3. <span class="font-medium">Combined with Super:</span> Your super balance of ${formatCurrency(inputs.currentSuper)} continues growing while the downsizing proceeds 
+                work alongside it, creating two powerful retirement income streams.`;
+            
+            document.getElementById('finalResult').innerHTML = 
+                `Result: You could retire ${(yearsToTraditionalRetirement - yearsToRetirement).toFixed(1)} years earlier than the traditional retirement 
+                age of 67, with a comfortable combined income of ${formatCurrency(inputs.annualExpenses)} per year from both your super and downsizing investments.`;
+        }
+
+        // Add event listeners to all inputs
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateRetirementProjections);
+        });
+
+        // Initial calculation
+        calculateRetirementProjections();
+    </script>
+</body>
+</html>
+
+
+
+
+              
