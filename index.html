@@ -116,14 +116,10 @@
                         </div>
 
                         <!-- Advanced Options Toggle -->
-                        <button
-                            id="advancedToggle"
-                            class="flex items-center gap-2 text-blue-600 text-sm"
-                            type="button"
-                        >
-                            <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                            <span>Show Advanced Options</span>
-                        </button>
+                        <div class="flex items-center gap-2 text-blue-600 text-sm cursor-pointer" id="advancedToggle">
+                            <i data-lucide="chevron-down"></i>
+                            Show Advanced Options
+                        </div>
 
                         <!-- Advanced Options -->
                         <div id="advancedOptions" class="space-y-4 hidden">
@@ -204,14 +200,10 @@
                         </div>
 
                         <!-- Math Details Toggle -->
-                        <button
-                            id="mathToggle"
-                            class="flex items-center gap-2 text-blue-600 text-sm mt-4"
-                            type="button"
-                        >
-                            <i data-lucide="info" class="w-4 h-4"></i>
-                            <span>Show Calculation Details</span>
-                        </button>
+                        <div class="flex items-center gap-2 text-blue-600 text-sm cursor-pointer mt-4" id="mathToggle">
+                            <i data-lucide="info"></i>
+                            Show Calculation Details
+                        </div>
 
                         <!-- Math Details -->
                         <div id="mathDetails" class="hidden bg-gray-50 p-4 rounded-lg text-sm space-y-2">
@@ -286,193 +278,183 @@
     </div>
 
     <script>
-        // Initialize Lucide icons
-        lucide.createIcons();
-
-        // Toggle handlers for Advanced Options
-        const advancedToggle = document.getElementById('advancedToggle');
-        const advancedOptions = document.getElementById('advancedOptions');
-        const advancedIcon = advancedToggle.querySelector('i');
-        const advancedText = advancedToggle.querySelector('span');
-
-        advancedToggle.addEventListener('click', () => {
-            const isHidden = advancedOptions.classList.contains('hidden');
-            advancedOptions.classList.toggle('hidden');
-            advancedIcon.setAttribute('data-lucide', isHidden ? 'chevron-up' : 'chevron-down');
-            advancedText.textContent = `${isHidden ? 'Hide' : 'Show'} Advanced Options`;
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
             lucide.createIcons();
-        });
 
-        // Toggle handlers for Math Details
-        const mathToggle = document.getElementById('mathToggle');
-        const mathDetails = document.getElementById('mathDetails');
-        const mathText = mathToggle.querySelector('span');
+            // Get toggle elements
+            const advancedToggle = document.getElementById('advancedToggle');
+            const advancedOptions = document.getElementById('advancedOptions');
+            const mathToggle = document.getElementById('mathToggle');
+            const mathDetails = document.getElementById('mathDetails');
 
-        mathToggle.addEventListener('click', () => {
-            const isHidden = mathDetails.classList.contains('hidden');
-            mathDetails.classList.toggle('hidden');
-            mathText.textContent = `${isHidden ? 'Hide' : 'Show'} Calculation Details`;
-        });
+            // Toggle handlers
+            advancedToggle.addEventListener('click', function() {
+                const isHidden = advancedOptions.classList.contains('hidden');
+                advancedOptions.classList.toggle('hidden');
+                const icon = this.querySelector('i');
+                icon.setAttribute('data-lucide', isHidden ? 'chevron-up' : 'chevron-down');
+                this.textContent = isHidden ? 'Hide Advanced Options' : 'Show Advanced Options';
+                this.prepend(icon);
+                lucide.createIcons();
+            });
 
-        // Format currency
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('en-AU', {
-                style: 'currency',
-                currency: 'AUD',
-                maximumFractionDigits: 0,
-            }).format(value);
-        }
+            mathToggle.addEventListener('click', function() {
+                const isHidden = mathDetails.classList.contains('hidden');
+                mathDetails.classList.toggle('hidden');
+                const icon = this.querySelector('i');
+                this.textContent = isHidden ? 'Hide Calculation Details' : 'Show Calculation Details';
+                this.prepend(icon);
+            });
 
-        // Validate and get input value
-        function getValidInput(elementId, defaultValue) {
-            const value = parseFloat(document.getElementById(elementId).value);
-            return isNaN(value) || value < 0 ? defaultValue : value;
-        }
-
-        // Get all inputs with validation
-        function getInputs() {
-            return {
-                currentHomeValue: getValidInput('currentHomeValue', 1500000),
-                newHomeValue: getValidInput('newHomeValue', 800000),
-                currentSuper: getValidInput('currentSuper', 600000),
-                salaryForSuper: getValidInput('salaryForSuper', 150000),
-                currentAge: getValidInput('currentAge', 55),
-                currentSavings: getValidInput('currentSavings', 500000),
-                annualExpenses: getValidInput('annualExpenses', 80000),
-                expectedReturn: getValidInput('expectedReturn', 5),
-                superReturnRate: getValidInput('superReturnRate', 7),
-                inflationRate: getValidInput('inflationRate', 2.5)
-            };
-        }
-
-        // Calculate retirement projections
-        function calculateRetirement() {
-            const inputs = getInputs();
-            
-            // Constants
-            const TRADITIONAL_RETIREMENT_AGE = 67;
-            const SUPER_CONTRIBUTION_CAP = 27500;
-            const SAFE_WITHDRAWAL_RATE = 0.04; // 4% rule
-            const SUPER_PRESERVATION_AGE = 60;
-            const ASSET_TEST_THRESHOLD = 585750; // Single homeowner threshold
-            const BASE_PENSION_AMOUNT = 25000; // Simplified annual pension amount
-            
-            // Calculate immediate capital from downsizing
-            const capitalFreed = Math.max(0, inputs.currentHomeValue - inputs.newHomeValue);
-            const totalInvestableCapital = capitalFreed + inputs.currentSavings;
-            
-            // Calculate years to traditional retirement
-            const yearsToTraditionalRetirement = Math.max(0, TRADITIONAL_RETIREMENT_AGE - inputs.currentAge);
-            
-            // Super calculations with real employer contribution rates
-            const annualSuperContribution = Math.min(
-                SUPER_CONTRIBUTION_CAP,
-                inputs.salaryForSuper * 0.115 // Current 11.5% rate
-            );
-            
-            // Account for inflation in calculations
-            const realInvestmentReturn = Math.max(0, (inputs.expectedReturn - inputs.inflationRate) / 100);
-            const realSuperReturn = Math.max(0, (inputs.superReturnRate - inputs.inflationRate) / 100);
-            
-            // Calculate early retirement possibility
-            let yearsToRetirement = 0;
-            let investedCapital = totalInvestableCapital;
-            let currentSuper = inputs.currentSuper;
-            
-            // More sophisticated retirement readiness calculation
-            const calculateRetirementReadiness = (capital, superBalance, age) => {
-                const canAccessSuper = age >= SUPER_PRESERVATION_AGE;
-                const incomeFromCapital = capital * SAFE_WITHDRAWAL_RATE;
-                const incomeFromSuper = canAccessSuper ? superBalance * SAFE_WITHDRAWAL_RATE : 0;
-                
-                // Include age pension considerations
-                let estimatedAgePension = 0;
-                if ((capital + superBalance) < ASSET_TEST_THRESHOLD) {
-                    estimatedAgePension = BASE_PENSION_AMOUNT;
-                }
-                
-                const totalIncome = incomeFromCapital + incomeFromSuper + estimatedAgePension;
-                return totalIncome >= inputs.annualExpenses;
-            };
-            
-            // Find earliest retirement point
-            while (yearsToRetirement < yearsToTraditionalRetirement) {
-                const projectedAge = inputs.currentAge + yearsToRetirement;
-                
-                if (calculateRetirementReadiness(investedCapital, currentSuper, projectedAge)) {
-                    break;
-                }
-                
-                // Compound growth for another year
-                investedCapital *= (1 + realInvestmentReturn);
-                currentSuper = (currentSuper + annualSuperContribution) * (1 + realSuperReturn);
-                yearsToRetirement++;
-                
-                // Safety check to prevent infinite loops
-                if (yearsToRetirement >= 50) break;
+            // Format currency
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                    maximumFractionDigits: 0,
+                }).format(value);
             }
-            
-            // Calculate final values for traditional retirement age
-            const projectedSuper = inputs.currentSuper * 
-                Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) +
-                annualSuperContribution * 
-                ((Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) - 1) / realSuperReturn);
-            
-            // Calculate monthly income at early retirement point
-            const retirementAge = inputs.currentAge + yearsToRetirement;
-            const canAccessSuper = retirementAge >= SUPER_PRESERVATION_AGE;
-            const monthlyIncomeFromCapital = (investedCapital * SAFE_WITHDRAWAL_RATE) / 12;
-            const monthlyIncomeFromSuper = canAccessSuper ? (currentSuper * SAFE_WITHDRAWAL_RATE) / 12 : 0;
-            const monthlyIncome = monthlyIncomeFromCapital + monthlyIncomeFromSuper;
 
-            // Update results in the DOM
-            document.getElementById('capitalFreed').textContent = formatCurrency(capitalFreed);
-            document.getElementById('monthlyIncome').textContent = formatCurrency(monthlyIncome);
-            document.getElementById('projectedSuper').textContent = formatCurrency(projectedSuper);
-            document.getElementById('yearsEarlier').textContent = 
-                Math.max(0, yearsToTraditionalRetirement - yearsToRetirement).toFixed(1) + ' years';
-            document.getElementById('combinedWealth').textContent = formatCurrency(currentSuper + investedCapital);
+            // Validate and get input value
+            function getValidInput(elementId, defaultValue) {
+                const element = document.getElementById(elementId);
+                if (!element) return defaultValue;
+                const value = parseFloat(element.value);
+                return isNaN(value) || value < 0 ? defaultValue : value;
+            }
 
-            // Generate insights with formatted values
-            const insightsData = [
-                {
-                    title: 'Downsizing Impact',
-                    content: `By downsizing from ${formatCurrency(inputs.currentHomeValue)} to ${formatCurrency(inputs.newHomeValue)}, 
-                    you free up ${formatCurrency(capitalFreed)} to invest.`
-                },
-                {
-                    title: 'Investment Growth',
-                    content: `This freed-up capital could generate approximately 
-                    ${formatCurrency(capitalFreed * SAFE_WITHDRAWAL_RATE)} in annual passive income (using the 4% rule).`
-                },
-                {
-                    title: 'Super Growth',
-                    content: `Your super could grow from ${formatCurrency(inputs.currentSuper)} to 
-                    ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).`
-                },
-                {
-                    title: 'Monthly Income',
-                    content: `At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income 
-                    from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.`
+            // Get all inputs with validation
+            function getInputs() {
+                return {
+                    currentHomeValue: getValidInput('currentHomeValue', 1500000),
+                    newHomeValue: getValidInput('newHomeValue', 800000),
+                    currentSuper: getValidInput('currentSuper', 600000),
+                    salaryForSuper: getValidInput('salaryForSuper', 150000),
+                    currentAge: getValidInput('currentAge', 55),
+                    currentSavings: getValidInput('currentSavings', 500000),
+                    annualExpenses: getValidInput('annualExpenses', 80000),
+                    expectedReturn: getValidInput('expectedReturn', 5),
+                    superReturnRate: getValidInput('superReturnRate', 7),
+                    inflationRate: getValidInput('inflationRate', 2.5)
+                };
+            }
+
+            // Calculate retirement projections
+            function calculateRetirement() {
+                const inputs = getInputs();
+                
+                // Constants
+                const TRADITIONAL_RETIREMENT_AGE = 67;
+                const SUPER_CONTRIBUTION_CAP = 27500;
+                const SAFE_WITHDRAWAL_RATE = 0.04; // 4% rule
+                const SUPER_PRESERVATION_AGE = 60;
+                const ASSET_TEST_THRESHOLD = 585750;
+                const BASE_PENSION_AMOUNT = 25000;
+                
+                // Calculate immediate capital from downsizing
+                const capitalFreed = Math.max(0, inputs.currentHomeValue - inputs.newHomeValue);
+                const totalInvestableCapital = capitalFreed + inputs.currentSavings;
+                
+                // Calculate years to traditional retirement
+                const yearsToTraditionalRetirement = Math.max(0, TRADITIONAL_RETIREMENT_AGE - inputs.currentAge);
+                
+                // Super calculations with real employer contribution rates
+                const annualSuperContribution = Math.min(
+                    SUPER_CONTRIBUTION_CAP,
+                    inputs.salaryForSuper * 0.115
+                );
+                
+                // Account for inflation in calculations
+                const realInvestmentReturn = Math.max(0, (inputs.expectedReturn - inputs.inflationRate) / 100);
+                const realSuperReturn = Math.max(0, (inputs.superReturnRate - inputs.inflationRate) / 100);
+                
+                // Calculate early retirement possibility
+                let yearsToRetirement = 0;
+                let investedCapital = totalInvestableCapital;
+                let currentSuper = inputs.currentSuper;
+                
+                // Retirement readiness calculation
+                function calculateRetirementReadiness(capital, superBalance, age) {
+                    const canAccessSuper = age >= SUPER_PRESERVATION_AGE;
+                    const incomeFromCapital = capital * SAFE_WITHDRAWAL_RATE;
+                    const incomeFromSuper = canAccessSuper ? superBalance * SAFE_WITHDRAWAL_RATE : 0;
+                    let estimatedAgePension = 0;
+                    
+                    if ((capital + superBalance) < ASSET_TEST_THRESHOLD) {
+                        estimatedAgePension = BASE_PENSION_AMOUNT;
+                    }
+                    
+                    const totalIncome = incomeFromCapital + incomeFromSuper + estimatedAgePension;
+                    return totalIncome >= inputs.annualExpenses;
                 }
-            ];
+                
+                // Find earliest retirement point
+                while (yearsToRetirement < yearsToTraditionalRetirement) {
+                    const projectedAge = inputs.currentAge + yearsToRetirement;
+                    
+                    if (calculateRetirementReadiness(investedCapital, currentSuper, projectedAge)) {
+                        break;
+                    }
+                    
+                    investedCapital *= (1 + realInvestmentReturn);
+                    currentSuper = (currentSuper + annualSuperContribution) * (1 + realSuperReturn);
+                    yearsToRetirement++;
+                    
+                    if (yearsToRetirement >= 50) break;
+                }
+                
+                // Calculate final values
+                const projectedSuper = inputs.currentSuper * 
+                    Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) +
+                    annualSuperContribution * 
+                    ((Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) - 1) / realSuperReturn);
 
-            // Update insights section
-            const insightsHTML = insightsData.map((insight, index) => `
-                <p>${index + 1}. <strong>${insight.title}:</strong> ${insight.content}</p>
-            `).join('');
-            
-            document.getElementById('insights').innerHTML = insightsHTML;
-        }
+                const retirementAge = inputs.currentAge + yearsToRetirement;
+                const canAccessSuper = retirementAge >= SUPER_PRESERVATION_AGE;
+                const monthlyIncomeFromCapital = (investedCapital * SAFE_WITHDRAWAL_RATE) / 12;
+                const monthlyIncomeFromSuper = canAccessSuper ? (currentSuper * SAFE_WITHDRAWAL_RATE) / 12 : 0;
+                const monthlyIncome = monthlyIncomeFromCapital + monthlyIncomeFromSuper;
 
-        // Add event listeners to all inputs
-        const inputs = document.querySelectorAll('input');
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateRetirement);
+                // Update DOM elements
+                try {
+                    document.getElementById('capitalFreed').textContent = formatCurrency(capitalFreed);
+                    document.getElementById('monthlyIncome').textContent = formatCurrency(monthlyIncome);
+                    document.getElementById('projectedSuper').textContent = formatCurrency(projectedSuper);
+                    document.getElementById('yearsEarlier').textContent = 
+                        Math.max(0, yearsToTraditionalRetirement - yearsToRetirement).toFixed(1) + ' years';
+                    document.getElementById('combinedWealth').textContent = formatCurrency(currentSuper + investedCapital);
+                    
+                    // Update insights
+                    const insights = document.getElementById('insights');
+                    insights.innerHTML = `
+                        <p>1. <strong>Downsizing Impact:</strong> By downsizing from ${formatCurrency(inputs.currentHomeValue)} to ${formatCurrency(inputs.newHomeValue)}, 
+                        you free up ${formatCurrency(capitalFreed)} to invest.</p>
+                        
+                        <p>2. <strong>Investment Growth:</strong> This freed-up capital could generate approximately 
+                        ${formatCurrency(capitalFreed * SAFE_WITHDRAWAL_RATE)} in annual passive income (using the 4% rule).</p>
+                        
+                        <p>3. <strong>Super Growth:</strong> Your super could grow from ${formatCurrency(inputs.currentSuper)} to 
+                        ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).</p>
+                        
+                        <p>4. <strong>Monthly Income:</strong> At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income 
+                        from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.</p>
+                    `;
+                } catch (error) {
+                    console.error('Error updating DOM:', error);
+                }
+            }
+
+            // Add event listeners to all inputs
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateRetirement);
+            });
+
+            // Initial calculation
+            calculateRetirement();
         });
-
-        // Initial calculation
-        calculateRetirement();
     </script>
 </body>
 </html>
