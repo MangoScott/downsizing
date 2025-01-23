@@ -119,9 +119,10 @@
                         <button
                             id="advancedToggle"
                             class="flex items-center gap-2 text-blue-600 text-sm"
+                            type="button"
                         >
                             <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                            Show Advanced Options
+                            <span>Show Advanced Options</span>
                         </button>
 
                         <!-- Advanced Options -->
@@ -206,9 +207,10 @@
                         <button
                             id="mathToggle"
                             class="flex items-center gap-2 text-blue-600 text-sm mt-4"
+                            type="button"
                         >
                             <i data-lucide="info" class="w-4 h-4"></i>
-                            Show Calculation Details
+                            <span>Show Calculation Details</span>
                         </button>
 
                         <!-- Math Details -->
@@ -287,30 +289,29 @@
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Toggle handlers
-        document.getElementById('advancedToggle').addEventListener('click', function() {
-            const options = document.getElementById('advancedOptions');
-            const icon = this.querySelector('i');
-            const isHidden = options.classList.contains('hidden');
-            
-            options.classList.toggle('hidden');
-            this.querySelector('i').setAttribute('data-lucide', isHidden ? 'chevron-up' : 'chevron-down');
-            this.textContent = `${isHidden ? 'Hide' : 'Show'} Advanced Options`;
-            this.prepend(document.createElement('i'));
-            this.querySelector('i').setAttribute('data-lucide', isHidden ? 'chevron-up' : 'chevron-down');
-            this.querySelector('i').className = 'w-4 h-4';
+        // Toggle handlers for Advanced Options
+        const advancedToggle = document.getElementById('advancedToggle');
+        const advancedOptions = document.getElementById('advancedOptions');
+        const advancedIcon = advancedToggle.querySelector('i');
+        const advancedText = advancedToggle.querySelector('span');
+
+        advancedToggle.addEventListener('click', () => {
+            const isHidden = advancedOptions.classList.contains('hidden');
+            advancedOptions.classList.toggle('hidden');
+            advancedIcon.setAttribute('data-lucide', isHidden ? 'chevron-up' : 'chevron-down');
+            advancedText.textContent = `${isHidden ? 'Hide' : 'Show'} Advanced Options`;
             lucide.createIcons();
         });
 
-        document.getElementById('mathToggle').addEventListener('click', function() {
-            const details = document.getElementById('mathDetails');
-            const isHidden = details.classList.contains('hidden');
-            details.classList.toggle('hidden');
-            this.textContent = `${isHidden ? 'Hide' : 'Show'} Calculation Details`;
-            this.prepend(document.createElement('i'));
-            this.querySelector('i').setAttribute('data-lucide', 'info');
-            this.querySelector('i').className = 'w-4 h-4';
-            lucide.createIcons();
+        // Toggle handlers for Math Details
+        const mathToggle = document.getElementById('mathToggle');
+        const mathDetails = document.getElementById('mathDetails');
+        const mathText = mathToggle.querySelector('span');
+
+        mathToggle.addEventListener('click', () => {
+            const isHidden = mathDetails.classList.contains('hidden');
+            mathDetails.classList.toggle('hidden');
+            mathText.textContent = `${isHidden ? 'Hide' : 'Show'} Calculation Details`;
         });
 
         // Format currency
@@ -432,33 +433,36 @@
                 Math.max(0, yearsToTraditionalRetirement - yearsToRetirement).toFixed(1) + ' years';
             document.getElementById('combinedWealth').textContent = formatCurrency(currentSuper + investedCapital);
 
-            // Update insights with more detailed analysis
-            const insightsDiv = document.getElementById('insights');
-            const insights = [];
-            
-            // Downsizing impact insight
-            insights.push(`By downsizing from ${formatCurrency(inputs.currentHomeValue)} to ${formatCurrency(inputs.newHomeValue)}, 
-                you free up ${formatCurrency(capitalFreed)} to invest.`);
-            
-            // Investment growth insight
-            const annualPassiveIncome = capitalFreed * SAFE_WITHDRAWAL_RATE;
-            insights.push(`This freed-up capital could generate approximately 
-                ${formatCurrency(annualPassiveIncome)} in annual passive income (using the 4% rule).`);
-            
-            // Super growth insight
-            insights.push(`Your super could grow from ${formatCurrency(inputs.currentSuper)} to 
-                ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).`);
-            
-            // Monthly income insight
-            insights.push(`At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income 
-                from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.`);
+            // Generate insights with formatted values
+            const insightsData = [
+                {
+                    title: 'Downsizing Impact',
+                    content: `By downsizing from ${formatCurrency(inputs.currentHomeValue)} to ${formatCurrency(inputs.newHomeValue)}, 
+                    you free up ${formatCurrency(capitalFreed)} to invest.`
+                },
+                {
+                    title: 'Investment Growth',
+                    content: `This freed-up capital could generate approximately 
+                    ${formatCurrency(capitalFreed * SAFE_WITHDRAWAL_RATE)} in annual passive income (using the 4% rule).`
+                },
+                {
+                    title: 'Super Growth',
+                    content: `Your super could grow from ${formatCurrency(inputs.currentSuper)} to 
+                    ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).`
+                },
+                {
+                    title: 'Monthly Income',
+                    content: `At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income 
+                    from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.`
+                }
+            ];
 
-            // Create the HTML with proper numbering
-            insightsDiv.innerHTML = insights.map((insight, index) => 
-                `<p>${index + 1}. <strong>${
-                    ['Downsizing Impact', 'Investment Growth', 'Super Growth', 'Monthly Income'][index]
-                }:</strong> ${insight}</p>`
-            ).join('\n');
+            // Update insights section
+            const insightsHTML = insightsData.map((insight, index) => `
+                <p>${index + 1}. <strong>${insight.title}:</strong> ${insight.content}</p>
+            `).join('');
+            
+            document.getElementById('insights').innerHTML = insightsHTML;
         }
 
         // Add event listeners to all inputs
