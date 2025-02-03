@@ -4,18 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Australian Retirement Calculator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .input-with-icon {
+            position: relative;
+        }
+        .input-icon {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B7280;
+        }
+        .input-with-icon input {
+            padding-left: 2rem;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="max-w-4xl mx-auto p-4">
+<body class="bg-gray-100 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
         <div class="bg-white rounded-lg shadow-lg p-6">
-            <h1 class="text-2xl font-bold mb-6 flex items-center gap-2">
-                <i data-lucide="piggy-bank" class="w-6 h-6"></i>
-                Australian Downsizing & Super Calculator
-            </h1>
+            <h1 class="text-2xl font-bold mb-6">🐨 Australian Retirement Calculator</h1>
 
-            <form id="calculatorForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Input Section -->
                 <div class="space-y-4">
                     <!-- Property Details -->
@@ -24,18 +35,18 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Current Home Value</label>
-                                <div class="relative">
-                                    <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                                    <input type="number" name="currentHomeValue" value="1500000" min="0" step="10000"
-                                        class="pl-8 w-full p-2 border rounded" />
+                                <div class="input-with-icon">
+                                    <span class="input-icon">$</span>
+                                    <input type="number" id="currentHomeValue" value="1500000" min="0" step="10000"
+                                        class="w-full p-2 border rounded" />
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Downsized Home Value</label>
-                                <div class="relative">
-                                    <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                                    <input type="number" name="newHomeValue" value="800000" min="0" step="10000"
-                                        class="pl-8 w-full p-2 border rounded" />
+                                <div class="input-with-icon">
+                                    <span class="input-icon">$</span>
+                                    <input type="number" id="newHomeValue" value="800000" min="0" step="10000"
+                                        class="w-full p-2 border rounded" />
                                 </div>
                             </div>
                         </div>
@@ -47,18 +58,18 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Current Super Balance</label>
-                                <div class="relative">
-                                    <i data-lucide="piggy-bank" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                                    <input type="number" name="currentSuper" value="600000" min="0" step="10000"
-                                        class="pl-8 w-full p-2 border rounded" />
+                                <div class="input-with-icon">
+                                    <span class="input-icon">$</span>
+                                    <input type="number" id="currentSuper" value="600000" min="0" step="10000"
+                                        class="w-full p-2 border rounded" />
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Annual Salary (for Super)</label>
-                                <div class="relative">
-                                    <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                                    <input type="number" name="salaryForSuper" value="150000" min="0" step="1000"
-                                        class="pl-8 w-full p-2 border rounded" />
+                                <div class="input-with-icon">
+                                    <span class="input-icon">$</span>
+                                    <input type="number" id="salaryForSuper" value="150000" min="0" step="1000"
+                                        class="w-full p-2 border rounded" />
                                 </div>
                             </div>
                         </div>
@@ -67,69 +78,48 @@
                     <!-- Basic Info -->
                     <div>
                         <label class="block text-sm font-medium mb-1">Current Age</label>
-                        <div class="relative">
-                            <i data-lucide="calendar" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                            <input type="number" name="currentAge" value="55" min="18" max="100"
-                                class="pl-8 w-full p-2 border rounded" />
-                        </div>
+                        <input type="number" id="currentAge" value="55" min="18" max="100"
+                            class="w-full p-2 border rounded" />
                     </div>
 
                     <!-- Advanced Options Toggle -->
-                    <button type="button" id="advancedToggle" class="flex items-center gap-2 text-blue-600 text-sm">
-                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    <button id="advancedToggle" class="text-blue-600 text-sm flex items-center gap-2">
+                        <span class="toggle-icon">▼</span>
                         Show Advanced Options
                     </button>
 
                     <!-- Advanced Options -->
-                    <div id="advancedOptions" class="space-y-4 hidden">
+                    <div id="advancedOptions" class="hidden space-y-4">
                         <div>
                             <label class="block text-sm font-medium mb-1">Current Non-Super Savings</label>
-                            <div class="relative">
-                                <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                                <input type="number" name="currentSavings" value="500000" min="0" step="10000"
-                                    class="pl-8 w-full p-2 border rounded" />
+                            <div class="input-with-icon">
+                                <span class="input-icon">$</span>
+                                <input type="number" id="currentSavings" value="500000" min="0" step="10000"
+                                    class="w-full p-2 border rounded" />
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Annual Living Expenses</label>
-                            <div class="relative">
-                                <i data-lucide="dollar-sign" class="absolute left-2 top-2.5 w-4 h-4 text-gray-500"></i>
-                                <input type="number" name="annualExpenses" value="80000" min="0" step="1000"
-                                    class="pl-8 w-full p-2 border rounded" />
+                            <div class="input-with-icon">
+                                <span class="input-icon">$</span>
+                                <input type="number" id="annualExpenses" value="80000" min="0" step="1000"
+                                    class="w-full p-2 border rounded" />
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Expected Investment Return (%)</label>
-                            <input type="number" name="expectedReturn" value="5" min="0" max="20" step="0.1"
+                            <input type="number" id="expectedReturn" value="5" min="0" max="20" step="0.1"
                                 class="w-full p-2 border rounded" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Super Return Rate (%)</label>
-                            <input type="number" name="superReturnRate" value="7" min="0" max="20" step="0.1"
+                            <input type="number" id="superReturnRate" value="7" min="0" max="20" step="0.1"
                                 class="w-full p-2 border rounded" />
                         </div>
                         <div>
                             <label class="block text-sm font-medium mb-1">Inflation Rate (%)</label>
-                            <input type="number" name="inflationRate" value="2.5" min="0" max="10" step="0.1"
+                            <input type="number" id="inflationRate" value="2.5" min="0" max="10" step="0.1"
                                 class="w-full p-2 border rounded" />
-                        </div>
-                    </div>
-
-                    <!-- Math Toggle -->
-                    <button type="button" id="mathToggle" class="flex items-center gap-2 text-blue-600 text-sm">
-                        <i data-lucide="info" class="w-4 h-4"></i>
-                        Show Calculation Details
-                    </button>
-
-                    <!-- Math Details -->
-                    <div id="mathDetails" class="hidden bg-gray-50 p-4 rounded-lg text-sm space-y-2">
-                        <h4 class="font-semibold">How the Calculations Work:</h4>
-                        <div class="space-y-3">
-                            <p>1. <strong>Super Contributions:</strong> Uses current 11.5% employer contribution rate, capped at $27,500 annually.</p>
-                            <p>2. <strong>Investment Returns:</strong> All returns are adjusted for inflation (real returns).</p>
-                            <p>3. <strong>Retirement Income:</strong> Uses the 4% safe withdrawal rule from super and investments.</p>
-                            <p>4. <strong>Age Pension:</strong> Considers basic asset test thresholds ($585,750 for single homeowner).</p>
-                            <p>5. <strong>Early Retirement:</strong> Calculates earliest point where combined income from super (if accessible) and investments meets expenses.</p>
                         </div>
                     </div>
                 </div>
@@ -140,19 +130,19 @@
                     <div class="space-y-6">
                         <div>
                             <p class="text-sm text-gray-600">Capital Released from Downsizing</p>
-                            <p id="capitalFreed" class="text-2xl font-bold text-green-600"></p>
+                            <p id="capitalFreed" class="text-2xl font-bold text-green-600">$0</p>
                         </div>
 
                         <div class="border-t pt-4">
                             <p class="text-sm text-gray-600">Monthly Income at Retirement</p>
-                            <p id="monthlyIncome" class="text-2xl font-bold text-blue-600"></p>
+                            <p id="monthlyIncome" class="text-2xl font-bold text-blue-600">$0</p>
                         </div>
 
                         <div class="border-t pt-4">
                             <h4 class="font-semibold mb-2">Traditional Retirement (Age 67)</h4>
                             <div>
                                 <p class="text-sm text-gray-600">Projected Super Balance</p>
-                                <p id="projectedSuper" class="text-xl font-semibold"></p>
+                                <p id="projectedSuper" class="text-xl font-semibold">$0</p>
                             </div>
                         </div>
 
@@ -161,27 +151,27 @@
                             <div class="space-y-2">
                                 <div>
                                     <p class="text-sm text-gray-600">Years Earlier You Could Retire</p>
-                                    <p id="yearsEarlier" class="text-2xl font-bold text-blue-600"></p>
+                                    <p id="yearsEarlier" class="text-2xl font-bold text-blue-600">0 years</p>
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600">Combined Wealth at Early Retirement</p>
-                                    <p id="combinedWealth" class="text-xl font-semibold"></p>
+                                    <p id="combinedWealth" class="text-xl font-semibold">$0</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-4 p-4 bg-blue-50 rounded-lg space-y-3">
-                            <h4 class="font-semibold">Key Insights:</h4>
+                        <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                            <h4 class="font-semibold mb-2">Key Insights:</h4>
                             <div id="insights" class="space-y-2 text-sm"></div>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
     <script>
-        // Constants for calculations
+        // Constants
         const CONSTANTS = {
             TRADITIONAL_RETIREMENT_AGE: 67,
             SUPER_CONTRIBUTION_CAP: 27500,
@@ -200,78 +190,72 @@
             }).format(value);
         }
 
-        // Initialize Lucide icons
-        lucide.createIcons();
-
-        // Get elements
-        const form = document.getElementById('calculatorForm');
+        // Get all input elements
+        const inputs = document.querySelectorAll('input');
         const advancedToggle = document.getElementById('advancedToggle');
         const advancedOptions = document.getElementById('advancedOptions');
-        const mathToggle = document.getElementById('mathToggle');
-        const mathDetails = document.getElementById('mathDetails');
 
-        // Toggle handlers
-        advancedToggle.addEventListener('click', function() {
+        // Get result elements
+        const resultElements = {
+            capitalFreed: document.getElementById('capitalFreed'),
+            monthlyIncome: document.getElementById('monthlyIncome'),
+            projectedSuper: document.getElementById('projectedSuper'),
+            yearsEarlier: document.getElementById('yearsEarlier'),
+            combinedWealth: document.getElementById('combinedWealth'),
+            insights: document.getElementById('insights')
+        };
+
+        // Toggle advanced options
+        advancedToggle.addEventListener('click', () => {
             const isHidden = advancedOptions.classList.contains('hidden');
             advancedOptions.classList.toggle('hidden');
-            
-            // Update toggle button
-            const icon = this.querySelector('i');
-            icon.setAttribute('data-lucide', isHidden ? 'chevron-up' : 'chevron-down');
-            this.innerHTML = `
-                <i data-lucide="${isHidden ? 'chevron-up' : 'chevron-down'}" class="w-4 h-4"></i>
+            advancedToggle.innerHTML = `
+                <span class="toggle-icon">${isHidden ? '▲' : '▼'}</span>
                 ${isHidden ? 'Hide Advanced Options' : 'Show Advanced Options'}
             `;
-            lucide.createIcons();
-        });
-
-        mathToggle.addEventListener('click', function() {
-            const isHidden = mathDetails.classList.contains('hidden');
-            mathDetails.classList.toggle('hidden');
-            
-            // Update toggle button
-            this.innerHTML = `
-                <i data-lucide="info" class="w-4 h-4"></i>
-                ${isHidden ? 'Hide Calculation Details' : 'Show Calculation Details'}
-            `;
-            lucide.createIcons();
         });
 
         // Get form data
         function getFormData() {
-            const formData = new FormData(form);
-            const data = {};
-            for (const [key, value] of formData.entries()) {
-                data[key] = parseFloat(value) || 0;
-            }
-            return data;
+            return {
+                currentHomeValue: parseFloat(document.getElementById('currentHomeValue').value) || 0,
+                newHomeValue: parseFloat(document.getElementById('newHomeValue').value) || 0,
+                currentSuper: parseFloat(document.getElementById('currentSuper').value) || 0,
+                salaryForSuper: parseFloat(document.getElementById('salaryForSuper').value) || 0,
+                currentAge: parseFloat(document.getElementById('currentAge').value) || 0,
+                currentSavings: parseFloat(document.getElementById('currentSavings').value) || 0,
+                annualExpenses: parseFloat(document.getElementById('annualExpenses').value) || 0,
+                expectedReturn: parseFloat(document.getElementById('expectedReturn').value) || 0,
+                superReturnRate: parseFloat(document.getElementById('superReturnRate').value) || 0,
+                inflationRate: parseFloat(document.getElementById('inflationRate').value) || 0,
+            };
         }
 
         // Calculate retirement projections
         function calculateRetirement() {
-            const inputs = getFormData();
+            const formData = getFormData();
             
             // Calculate capital freed from downsizing
-            const capitalFreed = Math.max(0, inputs.currentHomeValue - inputs.newHomeValue);
-            const totalInvestableCapital = capitalFreed + inputs.currentSavings;
+            const capitalFreed = Math.max(0, formData.currentHomeValue - formData.newHomeValue);
+            const totalInvestableCapital = capitalFreed + formData.currentSavings;
             
             // Calculate years to traditional retirement
-            const yearsToTraditionalRetirement = Math.max(0, CONSTANTS.TRADITIONAL_RETIREMENT_AGE - inputs.currentAge);
+            const yearsToTraditionalRetirement = Math.max(0, CONSTANTS.TRADITIONAL_RETIREMENT_AGE - formData.currentAge);
             
             // Super calculations
             const annualSuperContribution = Math.min(
                 CONSTANTS.SUPER_CONTRIBUTION_CAP,
-                inputs.salaryForSuper * 0.115
+                formData.salaryForSuper * 0.115
             );
             
             // Account for inflation in returns
-            const realInvestmentReturn = Math.max(0, (inputs.expectedReturn - inputs.inflationRate) / 100);
-            const realSuperReturn = Math.max(0, (inputs.superReturnRate - inputs.inflationRate) / 100);
+            const realInvestmentReturn = Math.max(0, (formData.expectedReturn - formData.inflationRate) / 100);
+            const realSuperReturn = Math.max(0, (formData.superReturnRate - formData.inflationRate) / 100);
             
             // Early retirement calculations
             let yearsToRetirement = 0;
             let investedCapital = totalInvestableCapital;
-            let currentSuper = inputs.currentSuper;
+            let currentSuper = formData.currentSuper;
             
             // Calculate retirement readiness
             function calculateRetirementReadiness(capital, superBalance, age) {
@@ -284,12 +268,12 @@
                     estimatedAgePension = CONSTANTS.BASE_PENSION_AMOUNT;
                 }
                 
-                return (incomeFromCapital + incomeFromSuper + estimatedAgePension) >= inputs.annualExpenses;
+                return (incomeFromCapital + incomeFromSuper + estimatedAgePension) >= formData.annualExpenses;
             }
             
             // Find earliest retirement point
             while (yearsToRetirement < yearsToTraditionalRetirement) {
-                const projectedAge = inputs.currentAge + yearsToRetirement;
+                const projectedAge = formData.currentAge + yearsToRetirement;
                 
                 if (calculateRetirementReadiness(investedCapital, currentSuper, projectedAge)) {
                     break;
@@ -303,12 +287,12 @@
             }
             
             // Calculate final values
-            const projectedSuper = inputs.currentSuper * 
+            const projectedSuper = formData.currentSuper * 
                 Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) +
                 annualSuperContribution * 
                 ((Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) - 1) / realSuperReturn);
 
-            const retirementAge = inputs.currentAge + yearsToRetirement;
+            const retirementAge = formData.currentAge + yearsToRetirement;
             const canAccessSuper = retirementAge >= CONSTANTS.SUPER_PRESERVATION_AGE;
             const monthlyIncomeFromCapital = (investedCapital * CONSTANTS.SAFE_WITHDRAWAL_RATE) / 12;
             const monthlyIncomeFromSuper = canAccessSuper ? (currentSuper * CONSTANTS.SAFE_WITHDRAWAL_RATE) / 12 : 0;
@@ -316,35 +300,28 @@
             const yearsEarlier = Math.max(0, yearsToTraditionalRetirement - yearsToRetirement);
             const combinedWealth = currentSuper + investedCapital;
 
-            // Update DOM with results
-            document.getElementById('capitalFreed').textContent = formatCurrency(capitalFreed);
-            document.getElementById('monthlyIncome').textContent = formatCurrency(monthlyIncome);
-            document.getElementById('projectedSuper').textContent = formatCurrency(projectedSuper);
-            document.getElementById('yearsEarlier').textContent = yearsEarlier.toFixed(1) + ' years';
-            document.getElementById('combinedWealth').textContent = formatCurrency(combinedWealth);
-            
+            // Update results in DOM
+            resultElements.capitalFreed.textContent = formatCurrency(capitalFreed);
+            resultElements.monthlyIncome.textContent = formatCurrency(monthlyIncome);
+            resultElements.projectedSuper.textContent = formatCurrency(projectedSuper);
+            resultElements.yearsEarlier.textContent = yearsEarlier.toFixed(1) + ' years';
+            resultElements.combinedWealth.textContent = formatCurrency(combinedWealth);
+
             // Update insights
-            const insights = document.getElementById('insights');
-            insights.innerHTML = `
-                <p>1. <strong>Downsizing Impact:</strong> By downsizing from ${formatCurrency(inputs.currentHomeValue)} to ${formatCurrency(inputs.newHomeValue)}, 
-                you free up ${formatCurrency(capitalFreed)} to invest.</p>
-                
-                <p>2. <strong>Investment Growth:</strong> This freed-up capital could generate approximately 
-                ${formatCurrency(capitalFreed * CONSTANTS.SAFE_WITHDRAWAL_RATE)} in annual passive income (using the 4% rule).</p>
-                
-                <p>3. <strong>Super Growth:</strong> Your super could grow from ${formatCurrency(inputs.currentSuper)} to 
-                ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).</p>
-                
-                <p>4. <strong>Monthly Income:</strong> At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income 
-                from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.</p>
-            `;
+            const insights = [
+                `Downsizing Impact: By downsizing from ${formatCurrency(formData.currentHomeValue)} to ${formatCurrency(formData.newHomeValue)}, you free up ${formatCurrency(capitalFreed)} to invest.`,
+                `Investment Growth: This freed-up capital could generate approximately ${formatCurrency(capitalFreed * CONSTANTS.SAFE_WITHDRAWAL_RATE)} in annual passive income (using the 4% rule).`,
+                `Super Growth: Your super could grow from ${formatCurrency(formData.currentSuper)} to ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).`,
+                `Monthly Income: At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.`
+            ];
+
+            resultElements.insights.innerHTML = insights.map((insight, index) => `
+                <p>${index + 1}. ${insight}</p>
+            `).join('');
         }
 
-        // Prevent form submission
-        form.addEventListener('submit', (e) => e.preventDefault());
-
         // Add event listeners to all inputs
-        form.querySelectorAll('input').forEach(input => {
+        inputs.forEach(input => {
             input.addEventListener('input', calculateRetirement);
         });
 
