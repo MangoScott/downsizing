@@ -5,178 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Australian Retirement Calculator</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <style>
-        .input-with-icon {
-            position: relative;
-        }
-        .input-icon {
-            position: absolute;
-            left: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6B7280;
-        }
-        .input-with-icon input {
-            padding-left: 2rem;
-        }
-    </style>
 </head>
 <body class="bg-gray-100 min-h-screen py-8">
     <div class="max-w-4xl mx-auto px-4">
         <div class="bg-white rounded-lg shadow-lg p-6">
-            <h1 class="text-2xl font-bold mb-6">🐨 Australian Retirement Calculator</h1>
-
+            <h1 class="text-2xl font-bold mb-6">🦘 Australian Retirement Calculator</h1>
+            
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Input Section -->
-                <div class="space-y-4">
-                    <!-- Property Details -->
+                <!-- Inputs -->
+                <div class="space-y-6">
+                    <!-- Property Section -->
                     <div class="bg-blue-50 p-4 rounded-lg">
                         <h3 class="font-semibold mb-4">Property Details</h3>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Current Home Value</label>
-                                <div class="input-with-icon">
-                                    <span class="input-icon">$</span>
-                                    <input type="number" id="currentHomeValue" value="1500000" min="0" step="10000"
-                                        class="w-full p-2 border rounded" />
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2">$</span>
+                                    <input type="number" id="currentHomeValue" value="1500000" class="w-full p-2 pl-6 border rounded">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Downsized Home Value</label>
-                                <div class="input-with-icon">
-                                    <span class="input-icon">$</span>
-                                    <input type="number" id="newHomeValue" value="800000" min="0" step="10000"
-                                        class="w-full p-2 border rounded" />
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2">$</span>
+                                    <input type="number" id="newHomeValue" value="800000" class="w-full p-2 pl-6 border rounded">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Super Details -->
+                    <!-- Super Section -->
                     <div class="bg-green-50 p-4 rounded-lg">
                         <h3 class="font-semibold mb-4">Superannuation Details</h3>
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium mb-1">Current Super Balance</label>
-                                <div class="input-with-icon">
-                                    <span class="input-icon">$</span>
-                                    <input type="number" id="currentSuper" value="600000" min="0" step="10000"
-                                        class="w-full p-2 border rounded" />
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2">$</span>
+                                    <input type="number" id="currentSuper" value="600000" class="w-full p-2 pl-6 border rounded">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium mb-1">Annual Salary (for Super)</label>
-                                <div class="input-with-icon">
-                                    <span class="input-icon">$</span>
-                                    <input type="number" id="salaryForSuper" value="150000" min="0" step="1000"
-                                        class="w-full p-2 border rounded" />
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2">$</span>
+                                    <input type="number" id="salaryForSuper" value="150000" class="w-full p-2 pl-6 border rounded">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Current Age</label>
+                                <input type="number" id="currentAge" value="55" class="w-full p-2 border rounded">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Savings Section -->
+                    <div class="bg-yellow-50 p-4 rounded-lg">
+                        <h3 class="font-semibold mb-4">Other Details</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Current Savings (Non-Super)</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2">$</span>
+                                    <input type="number" id="currentSavings" value="100000" class="w-full p-2 pl-6 border rounded">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Annual Living Expenses</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-2">$</span>
+                                    <input type="number" id="annualExpenses" value="80000" class="w-full p-2 pl-6 border rounded">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="space-y-6">
+                    <div class="bg-white p-4 rounded-lg shadow border">
+                        <h3 class="text-lg font-semibold mb-4">Your Results</h3>
+                        
+                        <!-- Capital Released -->
+                        <div class="mb-6">
+                            <p class="text-gray-600">Money Released from Downsizing</p>
+                            <p id="capitalFreed" class="text-3xl font-bold text-green-600">$0</p>
+                        </div>
+
+                        <!-- Super Contributions -->
+                        <div class="mb-6">
+                            <p class="text-gray-600">Annual Super Contribution</p>
+                            <p id="annualSuper" class="text-3xl font-bold text-blue-600">$0</p>
+                            <p id="superNote" class="text-sm text-gray-500"></p>
+                        </div>
+
+                        <!-- Retirement Age -->
+                        <div class="mb-6">
+                            <p class="text-gray-600">Potential Early Retirement</p>
+                            <p id="retirementAge" class="text-3xl font-bold text-purple-600">-</p>
+                        </div>
+
+                        <!-- Monthly Income -->
+                        <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+                            <p class="text-gray-600 font-semibold mb-2">Monthly Income at Early Retirement</p>
+                            <div class="space-y-2">
+                                <div>
+                                    <p class="text-sm text-gray-600">From Super</p>
+                                    <p id="monthlySuper" class="text-xl font-bold text-green-600">$0</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">From Other Savings</p>
+                                    <p id="monthlySavings" class="text-xl font-bold text-blue-600">$0</p>
+                                </div>
+                                <div class="pt-2 border-t">
+                                    <p class="text-sm text-gray-600">Total Monthly Income</p>
+                                    <p id="monthlyTotal" class="text-2xl font-bold text-purple-600">$0</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Basic Info -->
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Current Age</label>
-                        <input type="number" id="currentAge" value="55" min="18" max="100"
-                            class="w-full p-2 border rounded" />
+                    <!-- Detailed Insights -->
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <h4 class="font-semibold mb-3">What This Means For You:</h4>
+                        <div id="insights" class="space-y-3 text-sm"></div>
                     </div>
-
-                    <!-- Advanced Options Toggle -->
-                    <button id="advancedToggle" class="text-blue-600 text-sm flex items-center gap-2">
-                        <span class="toggle-icon">▼</span>
-                        Show Advanced Options
-                    </button>
-
-                    <!-- Advanced Options -->
-                    <div id="advancedOptions" class="hidden space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Current Non-Super Savings</label>
-                            <div class="input-with-icon">
-                                <span class="input-icon">$</span>
-                                <input type="number" id="currentSavings" value="500000" min="0" step="10000"
-                                    class="w-full p-2 border rounded" />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Annual Living Expenses</label>
-                            <div class="input-with-icon">
-                                <span class="input-icon">$</span>
-                                <input type="number" id="annualExpenses" value="80000" min="0" step="1000"
-                                    class="w-full p-2 border rounded" />
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Expected Investment Return (%)</label>
-                            <input type="number" id="expectedReturn" value="5" min="0" max="20" step="0.1"
-                                class="w-full p-2 border rounded" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Super Return Rate (%)</label>
-                            <input type="number" id="superReturnRate" value="7" min="0" max="20" step="0.1"
-                                class="w-full p-2 border rounded" />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Inflation Rate (%)</label>
-                            <input type="number" id="inflationRate" value="2.5" min="0" max="10" step="0.1"
-                                class="w-full p-2 border rounded" />
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Section -->
-                <div class="bg-gray-50 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-6">Your Retirement Journey</h3>
-                    
-                    <!-- Step 1: Downsizing Impact -->
-                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-                        <div class="flex items-center mb-3">
-                            <span class="bg-green-100 text-green-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center mr-2">1</span>
-                            <h4 class="font-semibold text-green-800">Money Released from Downsizing</h4>
-                        </div>
-                        <p id="capitalFreed" class="text-3xl font-bold text-green-600 mb-2">$0</p>
-                        <p class="text-sm text-gray-600">This is how much money you'll free up by downsizing your home. You can invest this amount to generate retirement income.</p>
-                    </div>
-
-                    <!-- Step 2: Monthly Income -->
-                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-                        <div class="flex items-center mb-3">
-                            <span class="bg-blue-100 text-blue-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center mr-2">2</span>
-                            <h4 class="font-semibold text-blue-800">Your Monthly Retirement Income</h4>
-                        </div>
-                        <p id="monthlyIncome" class="text-3xl font-bold text-blue-600 mb-2">$0</p>
-                        <p class="text-sm text-gray-600">This is your estimated monthly income in retirement, combining your super and investment returns.</p>
-                    </div>
-
-                    <!-- Step 3: Early Retirement Details -->
-                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
-                        <div class="flex items-center mb-3">
-                            <span class="bg-purple-100 text-purple-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center mr-2">3</span>
-                            <h4 class="font-semibold text-purple-800">Early Retirement Potential</h4>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-600 mb-1">Years Earlier You Could Retire</p>
-                                <p id="yearsEarlier" class="text-2xl font-bold text-purple-600">0 years</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600 mb-1">Total Retirement Savings</p>
-                                <p id="projectedSuper" class="text-2xl font-bold text-purple-600">$0</p>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-2">This shows how many years earlier you could potentially retire compared to the traditional retirement age of 67.</p>
-                    </div>
-
-                    <!-- Summary Box -->
-                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                        <h4 class="font-semibold text-blue-800 mb-3">What This Means For You:</h4>
-                        <div id="insights" class="space-y-3 text-sm text-blue-800"></div>
-                    </div>
-
-                    <!-- Disclaimer -->
-                    <p class="text-xs text-gray-500 mt-4">
-                        Note: These calculations are estimates based on current inputs and market assumptions. Actual results may vary. Consider consulting a financial advisor for personalized advice.
-                    </p>
                 </div>
             </div>
         </div>
@@ -184,217 +138,135 @@
 
     <script>
         // Constants
-        const CONSTANTS = {
-            TRADITIONAL_RETIREMENT_AGE: 67,
-            SUPER_CONTRIBUTION_CAP: 27500,
-            SAFE_WITHDRAWAL_RATE: 0.04,
-            SUPER_PRESERVATION_AGE: 60,
-            ASSET_TEST_THRESHOLD: 585750,
-            BASE_PENSION_AMOUNT: 25000,
-        };
+        const SUPER_RATE = 0.125; // 12.5%
+        const SUPER_CAP = 27500;
+        const RETIREMENT_AGE = 67;
+        const SAFE_WITHDRAWAL_RATE = 0.04;
+        const GROWTH_RATE = 0.07; // 7% annual return assumed
 
-        // Format currency
-        function formatCurrency(value) {
+        function formatCurrency(amount) {
             return new Intl.NumberFormat('en-AU', {
                 style: 'currency',
                 currency: 'AUD',
-                maximumFractionDigits: 0,
-            }).format(value);
+                maximumFractionDigits: 0
+            }).format(amount);
         }
 
-        // Get all input elements
-        const inputs = document.querySelectorAll('input');
-        const advancedToggle = document.getElementById('advancedToggle');
-        const advancedOptions = document.getElementById('advancedOptions');
-
-        // Get result elements
-        const resultElements = {
-            capitalFreed: document.getElementById('capitalFreed'),
-            monthlyIncome: document.getElementById('monthlyIncome'),
-            projectedSuper: document.getElementById('projectedSuper'),
-            yearsEarlier: document.getElementById('yearsEarlier'),
-            combinedWealth: document.getElementById('combinedWealth'),
-            insights: document.getElementById('insights')
-        };
-
-        // Toggle advanced options
-        advancedToggle.addEventListener('click', () => {
-            const isHidden = advancedOptions.classList.contains('hidden');
-            advancedOptions.classList.toggle('hidden');
-            advancedToggle.innerHTML = `
-                <span class="toggle-icon">${isHidden ? '▲' : '▼'}</span>
-                ${isHidden ? 'Hide Advanced Options' : 'Show Advanced Options'}
-            `;
-        });
-
-        // Get form data
-        function getFormData() {
-            return {
-                currentHomeValue: parseFloat(document.getElementById('currentHomeValue').value) || 0,
-                newHomeValue: parseFloat(document.getElementById('newHomeValue').value) || 0,
-                currentSuper: parseFloat(document.getElementById('currentSuper').value) || 0,
-                salaryForSuper: parseFloat(document.getElementById('salaryForSuper').value) || 0,
-                currentAge: parseFloat(document.getElementById('currentAge').value) || 0,
-                currentSavings: parseFloat(document.getElementById('currentSavings').value) || 0,
-                annualExpenses: parseFloat(document.getElementById('annualExpenses').value) || 0,
-                expectedReturn: parseFloat(document.getElementById('expectedReturn').value) || 0,
-                superReturnRate: parseFloat(document.getElementById('superReturnRate').value) || 0,
-                inflationRate: parseFloat(document.getElementById('inflationRate').value) || 0,
-            };
+        function getInputValue(id) {
+            return parseFloat(document.getElementById(id).value) || 0;
         }
 
-        // Calculate retirement projections
         function calculateRetirement() {
-            const formData = getFormData();
-            
+            // Get values
+            const currentHomeValue = getInputValue('currentHomeValue');
+            const newHomeValue = getInputValue('newHomeValue');
+            const currentSuper = getInputValue('currentSuper');
+            const currentSavings = getInputValue('currentSavings');
+            const salaryForSuper = getInputValue('salaryForSuper');
+            const annualExpenses = getInputValue('annualExpenses');
+            const currentAge = getInputValue('currentAge');
+
             // Calculate capital freed from downsizing
-            const capitalFreed = Math.max(0, formData.currentHomeValue - formData.newHomeValue);
-            const totalInvestableCapital = capitalFreed + formData.currentSavings;
-            
-            // Calculate years to traditional retirement
-            const yearsToTraditionalRetirement = Math.max(0, CONSTANTS.TRADITIONAL_RETIREMENT_AGE - formData.currentAge);
-            
-            // Super calculations
-            const annualSuperContribution = Math.min(
-                CONSTANTS.SUPER_CONTRIBUTION_CAP,
-                formData.salaryForSuper * 0.115
-            );
-            
-            // Account for inflation in returns
-            const realInvestmentReturn = Math.max(0, (formData.expectedReturn - formData.inflationRate) / 100);
-            const realSuperReturn = Math.max(0, (formData.superReturnRate - formData.inflationRate) / 100);
-            
-            // Early retirement calculations
-            let yearsToRetirement = 0;
-            let investedCapital = totalInvestableCapital;
-            let currentSuper = formData.currentSuper;
-            
-            // Calculate retirement readiness
-            function calculateRetirementReadiness(capital, superBalance, age) {
-                const canAccessSuper = age >= CONSTANTS.SUPER_PRESERVATION_AGE;
-                const incomeFromCapital = capital * CONSTANTS.SAFE_WITHDRAWAL_RATE;
-                const incomeFromSuper = canAccessSuper ? superBalance * CONSTANTS.SAFE_WITHDRAWAL_RATE : 0;
-                let estimatedAgePension = 0;
-                
-                if ((capital + superBalance) < CONSTANTS.ASSET_TEST_THRESHOLD) {
-                    estimatedAgePension = CONSTANTS.BASE_PENSION_AMOUNT;
-                }
-                
-                return (incomeFromCapital + incomeFromSuper + estimatedAgePension) >= formData.annualExpenses;
-            }
-            
-            // Find earliest retirement point
-            while (yearsToRetirement < yearsToTraditionalRetirement) {
-                const projectedAge = formData.currentAge + yearsToRetirement;
-                
-                if (calculateRetirementReadiness(investedCapital, currentSuper, projectedAge)) {
+            const capitalFreed = Math.max(0, currentHomeValue - newHomeValue);
+
+            // Calculate super contribution
+            const annualSuperContribution = Math.min(SUPER_CAP, salaryForSuper * SUPER_RATE);
+
+            // Calculate years until traditional retirement
+            const yearsToRetirement = RETIREMENT_AGE - currentAge;
+
+            // Calculate future super balance
+            const futureSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsToRetirement) +
+                annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsToRetirement) - 1) / GROWTH_RATE);
+
+            // Calculate future savings including downsizing money
+            const totalSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsToRetirement);
+
+            // Calculate total retirement assets
+            const totalAssets = futureSuper + totalSavings;
+
+            // Calculate potential annual retirement income
+            const annualIncome = totalAssets * SAFE_WITHDRAWAL_RATE;
+
+            // Calculate earliest retirement age
+            let earliestRetirementAge = currentAge;
+            let yearsNeeded = 0;
+            while (yearsNeeded <= yearsToRetirement) {
+                const projectedSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsNeeded) +
+                    annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsNeeded) - 1) / GROWTH_RATE);
+                const projectedSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsNeeded);
+                const projectedIncome = (projectedSuper + projectedSavings) * SAFE_WITHDRAWAL_RATE;
+
+                if (projectedIncome >= annualExpenses) {
                     break;
                 }
-                
-                investedCapital *= (1 + realInvestmentReturn);
-                currentSuper = (currentSuper + annualSuperContribution) * (1 + realSuperReturn);
-                yearsToRetirement++;
-                
-                if (yearsToRetirement >= 50) break;
+                yearsNeeded++;
+                earliestRetirementAge++;
             }
-            
-            // Calculate final values
-            const projectedSuper = formData.currentSuper * 
-                Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) +
-                annualSuperContribution * 
-                ((Math.pow(1 + realSuperReturn, yearsToTraditionalRetirement) - 1) / realSuperReturn);
 
-            const retirementAge = formData.currentAge + yearsToRetirement;
-            const canAccessSuper = retirementAge >= CONSTANTS.SUPER_PRESERVATION_AGE;
-            const monthlyIncomeFromCapital = (investedCapital * CONSTANTS.SAFE_WITHDRAWAL_RATE) / 12;
-            const monthlyIncomeFromSuper = canAccessSuper ? (currentSuper * CONSTANTS.SAFE_WITHDRAWAL_RATE) / 12 : 0;
-            const monthlyIncome = monthlyIncomeFromCapital + monthlyIncomeFromSuper;
-            const yearsEarlier = Math.max(0, yearsToTraditionalRetirement - yearsToRetirement);
-            const combinedWealth = currentSuper + investedCapital;
+            // Calculate potential monthly income at early retirement
+            let monthlyFromSuper = 0;
+            let monthlyFromSavings = 0;
 
-            // Update results in DOM
-            resultElements.capitalFreed.textContent = formatCurrency(capitalFreed);
-            resultElements.monthlyIncome.textContent = formatCurrency(monthlyIncome);
-            resultElements.projectedSuper.textContent = formatCurrency(projectedSuper);
-            resultElements.yearsEarlier.textContent = yearsEarlier.toFixed(1) + ' years';
-            resultElements.combinedWealth.textContent = formatCurrency(combinedWealth);
+            const projectedSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsNeeded) +
+                annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsNeeded) - 1) / GROWTH_RATE);
+            const projectedSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsNeeded);
 
-            // Update insights with more conversational and detailed analysis
-            const insights = [];
+            // Can only access super if age 60 or over
+            if (earliestRetirementAge >= 60) {
+                monthlyFromSuper = (projectedSuper * SAFE_WITHDRAWAL_RATE) / 12;
+            }
+            monthlyFromSavings = (projectedSavings * SAFE_WITHDRAWAL_RATE) / 12;
+            const totalMonthlyIncome = monthlyFromSuper + monthlyFromSavings;
+
+            // Update income display
+            document.getElementById('monthlySuper').textContent = formatCurrency(monthlyFromSuper);
+            document.getElementById('monthlySavings').textContent = formatCurrency(monthlyFromSavings);
+            document.getElementById('monthlyTotal').textContent = formatCurrency(totalMonthlyIncome);
             
-            // Downsizing impact insight
-            insights.push(`By moving from your ${formatCurrency(formData.currentHomeValue)} home to a ${formatCurrency(formData.newHomeValue)} property, you'll unlock ${formatCurrency(capitalFreed)} in equity. This is a significant amount that can work for your retirement!`);
-            
-            // Super contribution insight
-            const annualSuperContribution = Math.min(
-                CONSTANTS.SUPER_CONTRIBUTION_CAP,
-                formData.salaryForSuper * 0.115
-            );
-            const isCapped = (formData.salaryForSuper * 0.115) > CONSTANTS.SUPER_CONTRIBUTION_CAP;
-            insights.push(`Based on your ${formatCurrency(formData.salaryForSuper)} salary, your employer will contribute ${formatCurrency(annualSuperContribution)} to your super each year (${isCapped ? "capped at the maximum contribution limit" : "11.5% of your salary"}). ${isCapped ? " You're hitting the contribution cap - consider additional voluntary contributions if you want to save more." : ""}`);
-            
-            // Time to retirement insight
-            if (yearsEarlier > 0) {
-                insights.push(`Based on your numbers, you could potentially retire ${yearsEarlier.toFixed(1)} years earlier than the traditional retirement age of 67. That's retiring at age ${Math.round(CONSTANTS.TRADITIONAL_RETIREMENT_AGE - yearsEarlier)}!`);
+            let superNote = `Based on 12.5% of your salary`;
+            if ((salaryForSuper * SUPER_RATE) > SUPER_CAP) {
+                superNote += ' (capped at maximum)';
+            }
+            document.getElementById('superNote').textContent = superNote;
+
+            const yearsEarly = Math.max(0, RETIREMENT_AGE - earliestRetirementAge);
+            if (yearsEarly > 0) {
+                document.getElementById('retirementAge').textContent = 
+                    `${yearsEarly} years early (age ${earliestRetirementAge})`;
             } else {
-                insights.push(`With your current plan, you're on track for a traditional retirement at age 67. Consider adjusting your savings or downsizing amount if you'd like to retire earlier.`);
+                document.getElementById('retirementAge').textContent = 
+                    `Traditional retirement age (67)`;
             }
-            
-            // Monthly income insight
-            const yearlyIncome = monthlyIncome * 12;
-            const weeklyIncome = monthlyIncome / 4.33;
-            insights.push(`Your retirement income could be around ${formatCurrency(monthlyIncome)} per month (that's about ${formatCurrency(weeklyIncome)} per week). ${yearlyIncome > formData.annualExpenses ? "This exceeds your target expenses - well done!" : "Consider adjusting your plan to increase this amount if needed."}`);
-            
-            // Super growth insight
-            const superGrowth = ((currentSuper - formData.currentSuper) / formData.currentSuper * 100).toFixed(0);
-            const yearsToGrow = CONSTANTS.TRADITIONAL_RETIREMENT_AGE - formData.currentAge;
-            insights.push(`Over the next ${yearsToGrow} years until traditional retirement age, your super is projected to grow by approximately ${superGrowth}% from ${formatCurrency(formData.currentSuper)} to ${formatCurrency(currentSuper)}. This includes both your employer's contributions and investment returns (at ${formData.superReturnRate}% per year).`);
 
-            resultElements.insights.innerHTML = `
-                <div class="space-y-4">
-                    ${insights.map(insight => `
-                        <div class="flex items-start">
-                            <span class="text-blue-500 mr-2 flex-shrink-0">💡</span>
-                            <p class="text-blue-800">${insight}</p>
-                        </div>
-                    `).join('')}
+            // Update insights with monthly income details
+            const insights = [];
+            insights.push(`By downsizing, you'll free up ${formatCurrency(capitalFreed)} to invest for your retirement.`);
+            insights.push(`Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`);
+            
+            if (yearsEarly > 0) {
+                insights.push(`You could potentially retire ${yearsEarly} years earlier than the traditional retirement age of 67 (at age ${earliestRetirementAge}).`);
+                insights.push(`At your early retirement age of ${earliestRetirementAge}, you could receive ${formatCurrency(totalMonthlyIncome)} per month${earliestRetirementAge >= 60 ? ' from both super and other savings' : ' from your other savings (super accessible at 60)'}.`);
+            } else {
+                insights.push(`You're currently on track for a traditional retirement age of 67. Consider increasing savings or reducing expenses if you'd like to retire earlier.`);
+                insights.push(`At retirement, you could receive approximately ${formatCurrency(totalMonthlyIncome)} per month in total income.`);
+            }
+
+            document.getElementById('insights').innerHTML = insights.map(insight => `
+                <div class="flex items-start mb-3">
+                    <span class="text-blue-500 mr-2">💡</span>
+                    <p>${insight}</p>
                 </div>
-            `;
-
-            // Log for debugging
-            console.log('Updated insights:', insights);
-            
+            `).join('');
         }
 
-        // Initialize DOM elements
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verify all elements exist
-            const requiredElements = [
-                'capitalFreed',
-                'monthlyIncome',
-                'projectedSuper',
-                'yearsEarlier',
-                'combinedWealth',
-                'insights'
-            ];
-
-            const missingElements = requiredElements.filter(id => !document.getElementById(id));
-            if (missingElements.length > 0) {
-                console.error('Missing elements:', missingElements);
-                return;
-            }
-
-            // Add event listeners to all inputs
-            inputs.forEach(input => {
-                input.addEventListener('input', calculateRetirement);
-            });
-
-            // Initial calculation
-            calculateRetirement();
+        // Add event listeners
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateRetirement);
         });
 
-        // Get all input elements
-        const inputs = document.querySelectorAll('input');
+        // Initial calculation
+        calculateRetirement();
     </script>
 </body>
 </html>
