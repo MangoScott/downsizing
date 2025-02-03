@@ -126,45 +126,57 @@
 
                 <!-- Results Section -->
                 <div class="bg-gray-50 p-6 rounded-lg">
-                    <h3 class="text-xl font-semibold mb-4">Retirement Projections</h3>
-                    <div class="space-y-6">
-                        <div>
-                            <p class="text-sm text-gray-600">Capital Released from Downsizing</p>
-                            <p id="capitalFreed" class="text-2xl font-bold text-green-600">$0</p>
+                    <h3 class="text-xl font-semibold mb-6">Your Retirement Journey</h3>
+                    
+                    <!-- Step 1: Downsizing Impact -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-green-100 text-green-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center mr-2">1</span>
+                            <h4 class="font-semibold text-green-800">Money Released from Downsizing</h4>
                         </div>
-
-                        <div class="border-t pt-4">
-                            <p class="text-sm text-gray-600">Monthly Income at Retirement</p>
-                            <p id="monthlyIncome" class="text-2xl font-bold text-blue-600">$0</p>
-                        </div>
-
-                        <div class="border-t pt-4">
-                            <h4 class="font-semibold mb-2">Traditional Retirement (Age 67)</h4>
-                            <div>
-                                <p class="text-sm text-gray-600">Projected Super Balance</p>
-                                <p id="projectedSuper" class="text-xl font-semibold">$0</p>
-                            </div>
-                        </div>
-
-                        <div class="border-t pt-4">
-                            <h4 class="font-semibold mb-2">Early Retirement Scenario</h4>
-                            <div class="space-y-2">
-                                <div>
-                                    <p class="text-sm text-gray-600">Years Earlier You Could Retire</p>
-                                    <p id="yearsEarlier" class="text-2xl font-bold text-blue-600">0 years</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm text-gray-600">Combined Wealth at Early Retirement</p>
-                                    <p id="combinedWealth" class="text-xl font-semibold">$0</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 p-4 bg-blue-50 rounded-lg">
-                            <h4 class="font-semibold mb-2">Key Insights:</h4>
-                            <div id="insights" class="space-y-2 text-sm"></div>
-                        </div>
+                        <p id="capitalFreed" class="text-3xl font-bold text-green-600 mb-2">$0</p>
+                        <p class="text-sm text-gray-600">This is how much money you'll free up by downsizing your home. You can invest this amount to generate retirement income.</p>
                     </div>
+
+                    <!-- Step 2: Monthly Income -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-blue-100 text-blue-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center mr-2">2</span>
+                            <h4 class="font-semibold text-blue-800">Your Monthly Retirement Income</h4>
+                        </div>
+                        <p id="monthlyIncome" class="text-3xl font-bold text-blue-600 mb-2">$0</p>
+                        <p class="text-sm text-gray-600">This is your estimated monthly income in retirement, combining your super and investment returns.</p>
+                    </div>
+
+                    <!-- Step 3: Early Retirement Details -->
+                    <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-purple-100 text-purple-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center mr-2">3</span>
+                            <h4 class="font-semibold text-purple-800">Early Retirement Potential</h4>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">Years Earlier You Could Retire</p>
+                                <p id="yearsEarlier" class="text-2xl font-bold text-purple-600">0 years</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">Total Retirement Savings</p>
+                                <p id="projectedSuper" class="text-2xl font-bold text-purple-600">$0</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">This shows how many years earlier you could potentially retire compared to the traditional retirement age of 67.</p>
+                    </div>
+
+                    <!-- Summary Box -->
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <h4 class="font-semibold text-blue-800 mb-3">What This Means For You:</h4>
+                        <div id="insights" class="space-y-3 text-sm text-blue-800"></div>
+                    </div>
+
+                    <!-- Disclaimer -->
+                    <p class="text-xs text-gray-500 mt-4">
+                        Note: These calculations are estimates based on current inputs and market assumptions. Actual results may vary. Consider consulting a financial advisor for personalized advice.
+                    </p>
                 </div>
             </div>
         </div>
