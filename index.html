@@ -319,26 +319,82 @@
             resultElements.yearsEarlier.textContent = yearsEarlier.toFixed(1) + ' years';
             resultElements.combinedWealth.textContent = formatCurrency(combinedWealth);
 
-            // Update insights
-            const insights = [
-                `Downsizing Impact: By downsizing from ${formatCurrency(formData.currentHomeValue)} to ${formatCurrency(formData.newHomeValue)}, you free up ${formatCurrency(capitalFreed)} to invest.`,
-                `Investment Growth: This freed-up capital could generate approximately ${formatCurrency(capitalFreed * CONSTANTS.SAFE_WITHDRAWAL_RATE)} in annual passive income (using the 4% rule).`,
-                `Super Growth: Your super could grow from ${formatCurrency(formData.currentSuper)} to ${formatCurrency(currentSuper)} by your early retirement date (age ${Math.round(retirementAge)}).`,
-                `Monthly Income: At retirement, you could have ${formatCurrency(monthlyIncome)} monthly income from your combined super${canAccessSuper ? '' : ' (when accessible)'} and investment sources.`
-            ];
+            // Update insights with more conversational and detailed analysis
+            const insights = [];
+            
+            // Downsizing impact insight
+            insights.push(`By moving from your ${formatCurrency(formData.currentHomeValue)} home to a ${formatCurrency(formData.newHomeValue)} property, you'll unlock ${formatCurrency(capitalFreed)} in equity. This is a significant amount that can work for your retirement!`);
+            
+            // Super contribution insight
+            const annualSuperContribution = Math.min(
+                CONSTANTS.SUPER_CONTRIBUTION_CAP,
+                formData.salaryForSuper * 0.115
+            );
+            const isCapped = (formData.salaryForSuper * 0.115) > CONSTANTS.SUPER_CONTRIBUTION_CAP;
+            insights.push(`Based on your ${formatCurrency(formData.salaryForSuper)} salary, your employer will contribute ${formatCurrency(annualSuperContribution)} to your super each year (${isCapped ? "capped at the maximum contribution limit" : "11.5% of your salary"}). ${isCapped ? " You're hitting the contribution cap - consider additional voluntary contributions if you want to save more." : ""}`);
+            
+            // Time to retirement insight
+            if (yearsEarlier > 0) {
+                insights.push(`Based on your numbers, you could potentially retire ${yearsEarlier.toFixed(1)} years earlier than the traditional retirement age of 67. That's retiring at age ${Math.round(CONSTANTS.TRADITIONAL_RETIREMENT_AGE - yearsEarlier)}!`);
+            } else {
+                insights.push(`With your current plan, you're on track for a traditional retirement at age 67. Consider adjusting your savings or downsizing amount if you'd like to retire earlier.`);
+            }
+            
+            // Monthly income insight
+            const yearlyIncome = monthlyIncome * 12;
+            const weeklyIncome = monthlyIncome / 4.33;
+            insights.push(`Your retirement income could be around ${formatCurrency(monthlyIncome)} per month (that's about ${formatCurrency(weeklyIncome)} per week). ${yearlyIncome > formData.annualExpenses ? "This exceeds your target expenses - well done!" : "Consider adjusting your plan to increase this amount if needed."}`);
+            
+            // Super growth insight
+            const superGrowth = ((currentSuper - formData.currentSuper) / formData.currentSuper * 100).toFixed(0);
+            const yearsToGrow = CONSTANTS.TRADITIONAL_RETIREMENT_AGE - formData.currentAge;
+            insights.push(`Over the next ${yearsToGrow} years until traditional retirement age, your super is projected to grow by approximately ${superGrowth}% from ${formatCurrency(formData.currentSuper)} to ${formatCurrency(currentSuper)}. This includes both your employer's contributions and investment returns (at ${formData.superReturnRate}% per year).`);
 
-            resultElements.insights.innerHTML = insights.map((insight, index) => `
-                <p>${index + 1}. ${insight}</p>
-            `).join('');
+            resultElements.insights.innerHTML = `
+                <div class="space-y-4">
+                    ${insights.map(insight => `
+                        <div class="flex items-start">
+                            <span class="text-blue-500 mr-2 flex-shrink-0">💡</span>
+                            <p class="text-blue-800">${insight}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Log for debugging
+            console.log('Updated insights:', insights);
+            
         }
 
-        // Add event listeners to all inputs
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateRetirement);
+        // Initialize DOM elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verify all elements exist
+            const requiredElements = [
+                'capitalFreed',
+                'monthlyIncome',
+                'projectedSuper',
+                'yearsEarlier',
+                'combinedWealth',
+                'insights'
+            ];
+
+            const missingElements = requiredElements.filter(id => !document.getElementById(id));
+            if (missingElements.length > 0) {
+                console.error('Missing elements:', missingElements);
+                return;
+            }
+
+            // Add event listeners to all inputs
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateRetirement);
+            });
+
+            // Initial calculation
+            calculateRetirement();
         });
 
-        // Initial calculation
-        calculateRetirement();
+        // Get all input elements
+        const inputs = document.querySelectorAll('input');
     </script>
 </body>
 </html>
