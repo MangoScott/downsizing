@@ -156,6 +156,13 @@
             return parseFloat(document.getElementById(id).value) || 0;
         }
 
+        function updateDisplay(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = formatCurrency(value);
+            }
+        }
+
         function calculateRetirement() {
             // Get values
             const currentHomeValue = getInputValue('currentHomeValue');
@@ -168,33 +175,25 @@
 
             // Calculate capital freed from downsizing
             const capitalFreed = Math.max(0, currentHomeValue - newHomeValue);
+            updateDisplay('capitalFreed', capitalFreed);
 
             // Calculate super contribution
             const annualSuperContribution = Math.min(SUPER_CAP, salaryForSuper * SUPER_RATE);
+            updateDisplay('annualSuper', annualSuperContribution);
 
             // Calculate years until traditional retirement
             const yearsToRetirement = RETIREMENT_AGE - currentAge;
 
-            // Calculate future super balance
-            const futureSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsToRetirement) +
-                annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsToRetirement) - 1) / GROWTH_RATE);
-
-            // Calculate future savings including downsizing money
-            const totalSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsToRetirement);
-
-            // Calculate total retirement assets
-            const totalAssets = futureSuper + totalSavings;
-
-            // Calculate potential annual retirement income
-            const annualIncome = totalAssets * SAFE_WITHDRAWAL_RATE;
-
             // Calculate earliest retirement age
             let earliestRetirementAge = currentAge;
             let yearsNeeded = 0;
+            let projectedSuper = 0;
+            let projectedSavings = 0;
+
             while (yearsNeeded <= yearsToRetirement) {
-                const projectedSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsNeeded) +
+                projectedSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsNeeded) +
                     annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsNeeded) - 1) / GROWTH_RATE);
-                const projectedSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsNeeded);
+                projectedSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsNeeded);
                 const projectedIncome = (projectedSuper + projectedSavings) * SAFE_WITHDRAWAL_RATE;
 
                 if (projectedIncome >= annualExpenses) {
@@ -204,13 +203,9 @@
                 earliestRetirementAge++;
             }
 
-            // Calculate potential monthly income at early retirement
+            // Calculate monthly income components
             let monthlyFromSuper = 0;
             let monthlyFromSavings = 0;
-
-            const projectedSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsNeeded) +
-                annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsNeeded) - 1) / GROWTH_RATE);
-            const projectedSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsNeeded);
 
             // Can only access super if age 60 or over
             if (earliestRetirementAge >= 60) {
@@ -219,54 +214,61 @@
             monthlyFromSavings = (projectedSavings * SAFE_WITHDRAWAL_RATE) / 12;
             const totalMonthlyIncome = monthlyFromSuper + monthlyFromSavings;
 
-            // Update income display
-            document.getElementById('monthlySuper').textContent = formatCurrency(monthlyFromSuper);
-            document.getElementById('monthlySavings').textContent = formatCurrency(monthlyFromSavings);
-            document.getElementById('monthlyTotal').textContent = formatCurrency(totalMonthlyIncome);
-            
+            // Update all displays
+            updateDisplay('monthlySuper', monthlyFromSuper);
+            updateDisplay('monthlySavings', monthlyFromSavings);
+            updateDisplay('monthlyTotal', totalMonthlyIncome);
+
+            // Update super note
             let superNote = `Based on 12.5% of your salary`;
             if ((salaryForSuper * SUPER_RATE) > SUPER_CAP) {
                 superNote += ' (capped at maximum)';
             }
             document.getElementById('superNote').textContent = superNote;
 
+            // Update retirement age display
             const yearsEarly = Math.max(0, RETIREMENT_AGE - earliestRetirementAge);
+            const retirementDisplay = yearsEarly > 0
+                ? `${yearsEarly} years early (age ${earliestRetirementAge})`
+                : `Traditional retirement age (67)`;
+            document.getElementById('retirementAge').textContent = retirementDisplay;
+
+            // Update insights
+            const insights = [
+                `By downsizing, you'll free up ${formatCurrency(capitalFreed)} to invest for your retirement.`,
+                `Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`
+            ];
+
             if (yearsEarly > 0) {
-                document.getElementById('retirementAge').textContent = 
-                    `${yearsEarly} years early (age ${earliestRetirementAge})`;
+                insights.push(
+                    `You could potentially retire ${yearsEarly} years earlier than the traditional retirement age of 67 (at age ${earliestRetirementAge}).`,
+                    `At your early retirement age of ${earliestRetirementAge}, you could receive ${formatCurrency(totalMonthlyIncome)} per month${earliestRetirementAge >= 60 ? ' from both super and other savings' : ' from your other savings (super accessible at 60)'}.`
+                );
             } else {
-                document.getElementById('retirementAge').textContent = 
-                    `Traditional retirement age (67)`;
+                insights.push(
+                    `You're currently on track for a traditional retirement age of 67. Consider increasing savings or reducing expenses if you'd like to retire earlier.`,
+                    `At retirement, you could receive approximately ${formatCurrency(totalMonthlyIncome)} per month in total income.`
+                );
             }
 
-            // Update insights with monthly income details
-            const insights = [];
-            insights.push(`By downsizing, you'll free up ${formatCurrency(capitalFreed)} to invest for your retirement.`);
-            insights.push(`Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`);
-            
-            if (yearsEarly > 0) {
-                insights.push(`You could potentially retire ${yearsEarly} years earlier than the traditional retirement age of 67 (at age ${earliestRetirementAge}).`);
-                insights.push(`At your early retirement age of ${earliestRetirementAge}, you could receive ${formatCurrency(totalMonthlyIncome)} per month${earliestRetirementAge >= 60 ? ' from both super and other savings' : ' from your other savings (super accessible at 60)'}.`);
-            } else {
-                insights.push(`You're currently on track for a traditional retirement age of 67. Consider increasing savings or reducing expenses if you'd like to retire earlier.`);
-                insights.push(`At retirement, you could receive approximately ${formatCurrency(totalMonthlyIncome)} per month in total income.`);
-            }
-
-            document.getElementById('insights').innerHTML = insights.map(insight => `
-                <div class="flex items-start mb-3">
-                    <span class="text-blue-500 mr-2">💡</span>
-                    <p>${insight}</p>
-                </div>
-            `).join('');
+            document.getElementById('insights').innerHTML = insights
+                .map(insight => `
+                    <div class="flex items-start mb-3">
+                        <span class="text-blue-500 mr-2">💡</span>
+                        <p>${insight}</p>
+                    </div>
+                `).join('');
         }
 
-        // Add event listeners
+        // Add event listeners to all inputs
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', calculateRetirement);
+            input.addEventListener('change', calculateRetirement);
         });
 
         // Initial calculation
-        calculateRetirement();
+        document.addEventListener('DOMContentLoaded', calculateRetirement);
+        calculateRetirement(); // Run immediately as well
     </script>
 </body>
 </html>
