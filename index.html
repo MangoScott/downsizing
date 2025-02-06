@@ -12,7 +12,7 @@
             <h1 class="text-2xl font-bold mb-6">🦘 Australian Retirement Calculator</h1>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Inputs -->
+                <!-- Inputs (same as before) -->
                 <div class="space-y-6">
                     <!-- Property Section -->
                     <div class="bg-blue-50 p-4 rounded-lg">
@@ -82,31 +82,27 @@
                     </div>
                 </div>
 
-                <!-- Results -->
+                <!-- Results section (same as before) -->
                 <div class="space-y-6">
                     <div class="bg-white p-4 rounded-lg shadow border">
                         <h3 class="text-lg font-semibold mb-4">Your Results</h3>
                         
-                        <!-- Capital Released -->
                         <div class="mb-6">
                             <p class="text-gray-600">Money Released from Downsizing</p>
                             <p id="capitalFreed" class="text-3xl font-bold text-green-600">$0</p>
                         </div>
 
-                        <!-- Super Contributions -->
                         <div class="mb-6">
                             <p class="text-gray-600">Annual Super Contribution</p>
                             <p id="annualSuper" class="text-3xl font-bold text-blue-600">$0</p>
                             <p id="superNote" class="text-sm text-gray-500"></p>
                         </div>
 
-                        <!-- Retirement Age -->
                         <div class="mb-6">
                             <p class="text-gray-600">Potential Early Retirement</p>
                             <p id="retirementAge" class="text-3xl font-bold text-purple-600">-</p>
                         </div>
 
-                        <!-- Monthly Income -->
                         <div class="mb-6 bg-gray-50 p-4 rounded-lg">
                             <p class="text-gray-600 font-semibold mb-2">Monthly Income at Early Retirement</p>
                             <div class="space-y-2">
@@ -126,7 +122,6 @@
                         </div>
                     </div>
 
-                    <!-- Detailed Insights -->
                     <div class="bg-blue-50 p-4 rounded-lg">
                         <h4 class="font-semibold mb-3">What This Means For You:</h4>
                         <div id="insights" class="space-y-3 text-sm"></div>
@@ -163,8 +158,25 @@
             }
         }
 
+        function calculateFutureSuper(currentSuper, annualContribution, years) {
+            // Calculate future value of current super
+            const futureValueCurrentSuper = currentSuper * Math.pow(1 + GROWTH_RATE, years);
+            
+            // Calculate future value of contributions
+            // Using the future value of annuity formula: PMT * (((1 + r)^n - 1) / r)
+            // where PMT is the annual contribution, r is the growth rate, and n is the number of years
+            const futureValueContributions = annualContribution * 
+                ((Math.pow(1 + GROWTH_RATE, years) - 1) / GROWTH_RATE);
+            
+            return futureValueCurrentSuper + futureValueContributions;
+        }
+
+        function calculateFutureSavings(currentSavings, capitalFreed, years) {
+            return (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, years);
+        }
+
         function calculateRetirement() {
-            // Get values
+            // Get input values
             const currentHomeValue = getInputValue('currentHomeValue');
             const newHomeValue = getInputValue('newHomeValue');
             const currentSuper = getInputValue('currentSuper');
@@ -177,30 +189,43 @@
             const capitalFreed = Math.max(0, currentHomeValue - newHomeValue);
             updateDisplay('capitalFreed', capitalFreed);
 
-            // Calculate super contribution
+            // Calculate annual super contribution (capped)
             const annualSuperContribution = Math.min(SUPER_CAP, salaryForSuper * SUPER_RATE);
             updateDisplay('annualSuper', annualSuperContribution);
 
-            // Calculate years until traditional retirement
+            // Years until traditional retirement
             const yearsToRetirement = RETIREMENT_AGE - currentAge;
 
-            // Calculate earliest retirement age
+            // Find earliest possible retirement age
             let earliestRetirementAge = currentAge;
             let yearsNeeded = 0;
-            let projectedSuper = 0;
-            let projectedSavings = 0;
+            let finalSuperBalance = 0;
+            let finalSavingsBalance = 0;
 
+            // Iterate through years until we find when retirement is possible
             while (yearsNeeded <= yearsToRetirement) {
-                projectedSuper = currentSuper * Math.pow(1 + GROWTH_RATE, yearsNeeded) +
-                    annualSuperContribution * ((Math.pow(1 + GROWTH_RATE, yearsNeeded) - 1) / GROWTH_RATE);
-                projectedSavings = (currentSavings + capitalFreed) * Math.pow(1 + GROWTH_RATE, yearsNeeded);
-                const projectedIncome = (projectedSuper + projectedSavings) * SAFE_WITHDRAWAL_RATE;
+                // Calculate projected super and savings at this point
+                finalSuperBalance = calculateFutureSuper(currentSuper, annualSuperContribution, yearsNeeded);
+                finalSavingsBalance = calculateFutureSavings(currentSavings, capitalFreed, yearsNeeded);
 
-                if (projectedIncome >= annualExpenses) {
+                // Calculate total annual income possible
+                const projectedAnnualIncome = (finalSuperBalance + finalSavingsBalance) * SAFE_WITHDRAWAL_RATE;
+
+                // Check if income meets expenses
+                if (projectedAnnualIncome >= annualExpenses) {
                     break;
                 }
+
                 yearsNeeded++;
                 earliestRetirementAge++;
+
+                // If we've gone past traditional retirement age, stop
+                if (earliestRetirementAge > RETIREMENT_AGE) {
+                    earliestRetirementAge = RETIREMENT_AGE;
+                    finalSuperBalance = calculateFutureSuper(currentSuper, annualSuperContribution, yearsToRetirement);
+                    finalSavingsBalance = calculateFutureSavings(currentSavings, capitalFreed, yearsToRetirement);
+                    break;
+                }
             }
 
             // Calculate monthly income components
@@ -209,12 +234,12 @@
 
             // Can only access super if age 60 or over
             if (earliestRetirementAge >= 60) {
-                monthlyFromSuper = (projectedSuper * SAFE_WITHDRAWAL_RATE) / 12;
+                monthlyFromSuper = (finalSuperBalance * SAFE_WITHDRAWAL_RATE) / 12;
             }
-            monthlyFromSavings = (projectedSavings * SAFE_WITHDRAWAL_RATE) / 12;
+            monthlyFromSavings = (finalSavingsBalance * SAFE_WITHDRAWAL_RATE) / 12;
             const totalMonthlyIncome = monthlyFromSuper + monthlyFromSavings;
 
-            // Update all displays
+            // Update displays
             updateDisplay('monthlySuper', monthlyFromSuper);
             updateDisplay('monthlySavings', monthlyFromSavings);
             updateDisplay('monthlyTotal', totalMonthlyIncome);
@@ -228,20 +253,20 @@
 
             // Update retirement age display
             const yearsEarly = Math.max(0, RETIREMENT_AGE - earliestRetirementAge);
-            const retirementDisplay = yearsEarly > 0
+            document.getElementById('retirementAge').textContent = yearsEarly > 0
                 ? `${yearsEarly} years early (age ${earliestRetirementAge})`
                 : `Traditional retirement age (67)`;
-            document.getElementById('retirementAge').textContent = retirementDisplay;
 
             // Update insights
             const insights = [
                 `By downsizing, you'll free up ${formatCurrency(capitalFreed)} to invest for your retirement.`,
-                `Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`
+                `Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`,
+                `At retirement age ${earliestRetirementAge}, your estimated super balance will be ${formatCurrency(finalSuperBalance)} and your other savings will be ${formatCurrency(finalSavingsBalance)}.`
             ];
 
             if (yearsEarly > 0) {
                 insights.push(
-                    `You could potentially retire ${yearsEarly} years earlier than the traditional retirement age of 67 (at age ${earliestRetirementAge}).`,
+                    `You could potentially retire ${yearsEarly} years earlier than the traditional retirement age of 67.`,
                     `At your early retirement age of ${earliestRetirementAge}, you could receive ${formatCurrency(totalMonthlyIncome)} per month${earliestRetirementAge >= 60 ? ' from both super and other savings' : ' from your other savings (super accessible at 60)'}.`
                 );
             } else {
@@ -260,7 +285,7 @@
                 `).join('');
         }
 
-        // Add event listeners to all inputs
+        // Add event listeners
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', calculateRetirement);
             input.addEventListener('change', calculateRetirement);
@@ -268,7 +293,7 @@
 
         // Initial calculation
         document.addEventListener('DOMContentLoaded', calculateRetirement);
-        calculateRetirement(); // Run immediately as well
+        calculateRetirement();
     </script>
 </body>
 </html>
