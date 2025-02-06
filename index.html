@@ -232,10 +232,18 @@
             let monthlyFromSuper = 0;
             let monthlyFromSavings = 0;
 
-            // Can only access super if age 60 or over
+            // Calculate how much super is accessible based on retirement age
             if (earliestRetirementAge >= 60) {
+                // If retiring at or after 60, all super is accessible
                 monthlyFromSuper = (finalSuperBalance * SAFE_WITHDRAWAL_RATE) / 12;
+            } else {
+                // If retiring before 60, super becomes accessible at 60
+                // Need to project super growth until age 60
+                const yearsUntilSuperAccess = 60 - earliestRetirementAge;
+                const superAt60 = calculateFutureSuper(finalSuperBalance, 0, yearsUntilSuperAccess);
+                monthlyFromSuper = (superAt60 * SAFE_WITHDRAWAL_RATE) / 12;
             }
+
             monthlyFromSavings = (finalSavingsBalance * SAFE_WITHDRAWAL_RATE) / 12;
             const totalMonthlyIncome = monthlyFromSuper + monthlyFromSavings;
 
@@ -258,11 +266,24 @@
                 : `Traditional retirement age (67)`;
 
             // Update insights
-            const insights = [
+            // Prepare insights based on retirement age
+            let insights = [
                 `By downsizing, you'll free up ${formatCurrency(capitalFreed)} to invest for your retirement.`,
-                `Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`,
-                `At retirement age ${earliestRetirementAge}, your estimated super balance will be ${formatCurrency(finalSuperBalance)} and your other savings will be ${formatCurrency(finalSavingsBalance)}.`
+                `Your super will receive ${formatCurrency(annualSuperContribution)} each year from employer contributions.`
             ];
+
+            if (earliestRetirementAge >= 60) {
+                insights.push(
+                    `At retirement age ${earliestRetirementAge}, your estimated super balance will be ${formatCurrency(finalSuperBalance)} and your other savings will be ${formatCurrency(finalSavingsBalance)}.`
+                );
+            } else {
+                const yearsUntilSuperAccess = 60 - earliestRetirementAge;
+                const superAt60 = calculateFutureSuper(finalSuperBalance, 0, yearsUntilSuperAccess);
+                insights.push(
+                    `At your early retirement age of ${earliestRetirementAge}, your super balance will be ${formatCurrency(finalSuperBalance)} (accessible at 60) and will grow to approximately ${formatCurrency(superAt60)} by age 60.`,
+                    `Your other savings will be ${formatCurrency(finalSavingsBalance)}.`
+                );
+            }
 
             if (yearsEarly > 0) {
                 insights.push(
